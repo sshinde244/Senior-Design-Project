@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Chat Website</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 16px; }
+    #chat { border: 1px solid #ddd; border-radius: 8px; padding: 12px; min-height: 300px; margin-bottom: 12px; overflow-y: auto; }
+    .msg { margin: 8px 0; padding: 8px 10px; border-radius: 8px; }
+    .user { background: #eef; }
+    .assistant { background: #efe; }
+    .row { display: flex; gap: 8px; }
+    input { flex: 1; padding: 10px; }
+    button { padding: 10px 14px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Claude Chat</h1>
+  <div id="chat"></div>
+
+  <div class="row">
+    <input id="input" type="text" placeholder="Type your message..." />
+    <button id="send">Send</button>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("input");
+    const sendBtn = document.getElementById("send");
+
+    // Keep history in memory for this page session
+    const history = [];
+
+    function addMessage(role, text) {
+      const div = document.createElement("div");
+      div.className = `msg ${role}`;
+      div.textContent = (role === "user" ? "You: " : "Claude: ") + text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const message = input.value.trim();
+      if (!message) return;
+
+      addMessage("user", message);
+      input.value = "";
+      sendBtn.disabled = true;
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, history })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          addMessage("assistant", `Error: ${data.error || "Request failed"}`);
+          return;
+        }
+
+        addMessage("assistant", data.reply);
+
+        // Save history so future requests include context
+        history.push({ role: "user", content: message });
+        history.push({ role: "assistant", content: data.reply });
+      } catch (e) {
+        addMessage("assistant", "Network error. Check server and try again.");
+      } finally {
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
