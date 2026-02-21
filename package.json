@@ -1,0 +1,25 @@
+{
+  "name": "senior-design-project",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000S\u0000e\u0000n\u0000i\u0000o\u0000r\u0000-\u0000D\u0000e\u0000s\u0000i\u0000g\u0000n\u0000-\u0000P\u0000r\u0000o\u0000j\u0000e\u0000c\u0000t\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sshinde244/Senior-Design-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sshinde244/Senior-Design-Project/issues"
+  },
+  "homepage": "https://github.com/sshinde244/Senior-Design-Project#readme",
+  "dependencies": {
+    "anthropic": "^0.0.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  }
+}
