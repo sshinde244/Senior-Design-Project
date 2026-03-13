@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/sshinde244/Senior-Design-Project#readme",
   "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.2.74",
+    "@anthropic-ai/sdk": "^0.78.0",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "anthropic": "^0.0.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1"
