@@ -3,6 +3,8 @@ const express = require("express");
 const path = require("path");
 const Anthropic = require("@anthropic-ai/sdk");
 
+const { chatConfig, agentConfig } = require("./claude.config");
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -25,26 +27,25 @@ app.post("/api/chat", async (req, res) => {
       return res.status(400).json({ error: "Message is required." });
     }
 
-    // Messages API is stateless — send full history if you want continuity.
     const messages = [
       ...history,
       { role: "user", content: message }
     ];
 
     const response = await client.messages.create({
-      model: "claude-sonnet-4-5", // use a model name available to your account
-      max_tokens: 500,
-      messages
+      model: chatConfig.model,
+      max_tokens: chatConfig.maxTokens,
+      system: chatConfig.systemPrompt,
+      messages,
     });
 
-    // Anthropic response content is an array; usually text is in content[0].text
     const text =
       response.content?.find((c) => c.type === "text")?.text ||
       "No text response returned.";
 
     res.json({ reply: text });
   } catch (err) {
-    console.error(err);
+    console.error("CHAT ERROR:", err);
     res.status(500).json({
       error: "Claude request failed.",
       details: err.message || "Unknown error"
@@ -54,68 +55,53 @@ app.post("/api/chat", async (req, res) => {
 
 app.post("/api/agent", async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, history = [] } = req.body;
 
     if (!message || typeof message !== "string") {
       return res.status(400).json({ error: "Message is required." });
     }
 
-    // Agent SDK expects an async generator prompt stream (not a plain string)
-    async function* promptStream() {
-      yield {
-        type: "user",
-        message: {
-          role: "user",
-          content: message,
-        },
-      };
-    }
-
-    // Your server.js is CommonJS (require). The Agent SDK is ESM-friendly.
-    // Dynamic import avoids changing your whole project to ESM.
     const { query } = await import("@anthropic-ai/claude-agent-sdk");
 
+    console.log("ANTHROPIC KEY PRESENT:", !!process.env.ANTHROPIC_API_KEY);
+    console.log("CENSUS KEY PRESENT:", !!process.env.CENSUS_API_KEY);
+
+    // Inject conversation history into the prompt as context
+    const historyContext = history
+      .map(m => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+      .join("\n");
+
+    const fullPrompt = historyContext
+      ? `${agentConfig.promptPrefix}Previous conversation:\n${historyContext}\n\nUser: ${message}`
+      : `${agentConfig.promptPrefix}${message}`;
+
     let finalText = "";
+    const events = [];
 
     for await (const msg of query({
-      prompt: promptStream(),
+      prompt: fullPrompt,
       options: {
-        // DEV MODE: don't get blocked by "grant permission" prompts
-        permissionMode: "bypassPermissions",
-
-        // ---- MCP SERVER CONFIG ----
-        // Replace this with YOUR MCP server in Step 4.
-        // For now, keep it as-is just to prove wiring works.
-        // mcpServers: {
-        //   "claude-code-docs": {
-        //     type: "http",
-        //     url: "https://code.claude.com/docs/mcp",
-        //   },
-        // },
-
-        // // Allow tools from that MCP server
-        // allowedTools: ["mcp__claude-code-docs__*"],
-
-        mcpServers: {
-          "mcp-census-api": {
-            command: "bash",
-            args: ["/Users/shaunak/Documents/SDP/us-census-bureau-data-api-mcp-main/scripts/mcp-connect.sh"],
-            env: { CENSUS_API_KEY: process.env.CENSUS_API_KEY }
-          }
-        },
-        allowedTools: ["mcp__mcp-census-api__*"], // dev
-
-        maxTurns: 6,
+        permissionMode: agentConfig.permissionMode,
+        allowDangerouslySkipPermissions: agentConfig.allowDangerouslySkipPermissions,
+        maxTurns: agentConfig.maxTurns,
+        mcpServers: agentConfig.mcpServers,
+        allowedTools: agentConfig.allowedTools,
       },
     })) {
+      events.push(msg);
+      console.dir(msg, { depth: null });
+
       if (msg.type === "result" && msg.subtype === "success") {
         finalText = msg.result;
       }
     }
 
-    res.json({ reply: finalText || "No response returned." });
+    res.json({
+      reply: finalText || "No response returned.",
+      debugCount: events.length
+    });
   } catch (err) {
-    console.error(err);
+    console.error("AGENT ERROR:", err);
     res.status(500).json({
       error: "Agent request failed.",
       details: err.message || "Unknown error",
