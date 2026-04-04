@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const Anthropic = require("@anthropic-ai/sdk");
 
-const { chatConfig, agentConfig } = require("./claude.config");
+const { chatConfig, agentConfig, mcpRegistry } = require("./claude.config");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,6 +19,15 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 
+app.get("/api/mcps", (_req, res) => {
+  res.json({
+    mcps: Object.values(mcpRegistry).map((mcp) => ({
+      id: mcp.id,
+      label: mcp.label,
+    })),
+  });
+});
+
 app.post("/api/chat", async (req, res) => {
   try {
     const { message, history = [] } = req.body;
@@ -27,16 +36,11 @@ app.post("/api/chat", async (req, res) => {
       return res.status(400).json({ error: "Message is required." });
     }
 
-    const messages = [
-      ...history,
-      { role: "user", content: message }
-    ];
-
     const response = await client.messages.create({
       model: chatConfig.model,
       max_tokens: chatConfig.maxTokens,
       system: chatConfig.systemPrompt,
-      messages,
+      messages: [...history, { role: "user", content: message }],
     });
 
     const text =
@@ -46,37 +50,43 @@ app.post("/api/chat", async (req, res) => {
     res.json({ reply: text });
   } catch (err) {
     console.error("CHAT ERROR:", err);
-    res.status(500).json({
-      error: "Claude request failed.",
-      details: err.message || "Unknown error"
-    });
+    res.status(500).json({ error: "Claude request failed.", details: err.message });
   }
 });
 
 app.post("/api/agent", async (req, res) => {
   try {
-    const { message, history = [] } = req.body;
+    const { message, history = [], mcpId = "census" } = req.body;
 
     if (!message || typeof message !== "string") {
       return res.status(400).json({ error: "Message is required." });
     }
 
+    const selectedMcp = mcpRegistry[mcpId];
+    if (!selectedMcp) {
+      return res.status(400).json({ error: `Unknown MCP: ${mcpId}` });
+    }
+
     const { query } = await import("@anthropic-ai/claude-agent-sdk");
 
-    console.log("ANTHROPIC KEY PRESENT:", !!process.env.ANTHROPIC_API_KEY);
-    console.log("CENSUS KEY PRESENT:", !!process.env.CENSUS_API_KEY);
-
-    // Inject conversation history into the prompt as context
     const historyContext = history
-      .map(m => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+      .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
       .join("\n");
 
     const fullPrompt = historyContext
-      ? `${agentConfig.promptPrefix}Previous conversation:\n${historyContext}\n\nUser: ${message}`
-      : `${agentConfig.promptPrefix}${message}`;
+      ? `Previous conversation:\n${historyContext}\n\nUser: ${message}`
+      : message;
+
+    const mcpServers = {
+      [selectedMcp.id]: {
+        command: selectedMcp.command,
+        args: selectedMcp.args,
+        env: selectedMcp.env,
+      },
+    };
 
     let finalText = "";
-    const events = [];
+    let lastText = "";
 
     for await (const msg of query({
       prompt: fullPrompt,
@@ -84,28 +94,37 @@ app.post("/api/agent", async (req, res) => {
         permissionMode: agentConfig.permissionMode,
         allowDangerouslySkipPermissions: agentConfig.allowDangerouslySkipPermissions,
         maxTurns: agentConfig.maxTurns,
-        mcpServers: agentConfig.mcpServers,
-        allowedTools: agentConfig.allowedTools,
+        mcpServers,
+        allowedTools: [`mcp__${selectedMcp.id}__*`],
       },
     })) {
-      events.push(msg);
-      console.dir(msg, { depth: null });
+      if (msg.type === "assistant") {
+        if (typeof msg.message?.content === "string") {
+          lastText = msg.message.content;
+        } else if (Array.isArray(msg.message?.content)) {
+          const text = msg.message.content
+            .filter((c) => c.type === "text")
+            .map((c) => c.text)
+            .join("\n");
+          if (text) lastText = text;
+        }
+      }
 
       if (msg.type === "result" && msg.subtype === "success") {
-        finalText = msg.result;
+        finalText =
+          typeof msg.result === "string"
+            ? msg.result
+            : JSON.stringify(msg.result, null, 2);
       }
     }
 
     res.json({
-      reply: finalText || "No response returned.",
-      debugCount: events.length
+      reply: finalText || lastText || "No response returned.",
+      selectedMcp: { id: selectedMcp.id, label: selectedMcp.label },
     });
   } catch (err) {
-    console.error("AGENT ERROR:", err);
-    res.status(500).json({
-      error: "Agent request failed.",
-      details: err.message || "Unknown error",
-    });
+    console.error("AGENT ERROR:", err.message);
+    res.status(500).json({ error: "Agent request failed.", details: err.message });
   }
 });
 

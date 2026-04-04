@@ -640,6 +640,18 @@
       <!-- chat panes are injected here by JS, one per tab -->
  
       <div class="input-area">
+  <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
+    <label for="mcpSelect" style="font-size:12px; color: var(--text-muted);">MCP</label>
+    <select id="mcpSelect" style="
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 13px;
+    "></select>
+  </div>
+
         <div class="input-row">
           <textarea class="input-field" id="input" placeholder="Message Claude…" rows="1"></textarea>
           <button class="send-btn" id="send" title="Send">↑</button>
@@ -682,6 +694,25 @@
  
   const chatBody = document.getElementById('chatBody');
   const inputArea = chatBody.querySelector('.input-area');
+  const mcpSelect = document.getElementById('mcpSelect');
+
+  async function loadMcps() {
+    try {
+      const res = await fetch("/api/mcps");
+      const data = await res.json();
+
+      mcpSelect.innerHTML = "";
+
+      data.mcps.forEach((mcp) => {
+        const option = document.createElement("option");
+        option.value = mcp.id;
+        option.textContent = mcp.label;
+        mcpSelect.appendChild(option);
+      });
+    } catch (err) {
+      console.error("Failed to load MCPs:", err);
+    }
+  }
  
   function createTab(name) {
     const id = nextTabId++;
@@ -881,10 +912,14 @@
     const thinkingEl = addThinkingIndicator(tab.pane);
  
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch("/api/agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, history: historySnapshot })
+        body: JSON.stringify({
+          message,
+          history: historySnapshot,
+          mcpId: mcpSelect.value
+        })
       });
  
       const data = await res.json();
@@ -945,6 +980,8 @@
   });
  
   // ── Init ──
+  loadMcps();
+
   const firstId = createTab('New Chat');
   switchTab(firstId);
 </script>
