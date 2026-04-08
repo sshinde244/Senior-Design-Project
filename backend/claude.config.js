@@ -31,6 +31,14 @@ const mcpRegistry = {
     args: [path.join(__dirname, "tmdb-mcp.js")],
     env: { ...process.env, TMDB_API_KEY: process.env.TMDB_API_KEY },
   },
+
+  news: {
+    id: "news",
+    label: "News API MCP",
+    command: "node",
+    args: [path.join(__dirname, "news-mcp.js")],
+    env: { ...process.env, NEWS_API_KEY: process.env.NEWS_API_KEY },
+  },
 };
 
 module.exports = { chatConfig, agentConfig, mcpRegistry };
