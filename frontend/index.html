@@ -1753,12 +1753,8 @@
   <div class="page" id="page-docs">
     <div class="docs-layout">
       <div class="docs-sidebar">
-        <div class="docs-nav-label">Getting Started</div>
-        <button class="docs-nav-item active" onclick="showDoc('setup')">Setup &amp; Installation</button>
-        <button class="docs-nav-item" onclick="showDoc('envvars')">Environment Variables</button>
-
         <div class="docs-nav-label">API Reference</div>
-        <button class="docs-nav-item" onclick="showDoc('endpoints')">Endpoints</button>
+        <button class="docs-nav-item active" onclick="showDoc('endpoints')">Endpoints</button>
         <button class="docs-nav-item" onclick="showDoc('chat-api')">Chat API</button>
         <button class="docs-nav-item" onclick="showDoc('agent-api')">Agent API</button>
 
@@ -1769,33 +1765,7 @@
 
       <div class="docs-content">
 
-        <div class="docs-section active" id="doc-setup">
-          <h2>Setup &amp; Installation</h2>
-          <p>This project requires Node.js 18+ and (for the Census MCP) Docker. Clone the repository and install dependencies:</p>
-          <div class="docs-code">git clone https://github.com/sshinde244/Senior-Design-Project.git
-cd Senior-Design-Project</div>
-          <h3>Start the server</h3>
-          <p>Setup the .env file with the API key, then run:</p>
-          <div class="docs-code">npm start</div>
-          <p>The server starts on <code style="font-family:monospace;font-size:12px;color:var(--accent)">http://localhost:3000</code> by default. Open your browser and start chatting.</p>
-          <h3>Census MCP (Docker)</h3>
-          <p>The Census MCP runs inside a Docker container named <code style="font-family:monospace;font-size:12px;color:var(--accent)">mcp-server</code>. Make sure the container is running before using it:</p>
-          <div class="docs-code">docker start mcp-server</div>
-        </div>
-
-        <div class="docs-section" id="doc-envvars">
-          <h2>Environment Variables</h2>
-          <p>Create a <code style="font-family:monospace;font-size:12px;color:var(--accent)">.env</code> file in the project root with these values:</p>
-          <table class="docs-table">
-            <tr><th>Variable</th><th>Description</th><th>Required</th></tr>
-            <tr><td>ANTHROPIC_API_KEY</td><td>Your Anthropic API key from console.anthropic.com</td><td>Yes</td></tr>
-            <tr><td>TMDB_API_KEY</td><td>TMDB v3 API key from themoviedb.org/settings/api</td><td>For TMDB MCP</td></tr>
-            <tr><td>CENSUS_API_KEY</td><td>US Census Bureau API key from api.census.gov/data/key_signup.html</td><td>For Census MCP</td></tr>
-            <tr><td>PORT</td><td>Port for the Express server (default: 3000)</td><td>No</td></tr>
-          </table>
-        </div>
-
-        <div class="docs-section" id="doc-endpoints">
+        <div class="docs-section active" id="doc-endpoints">
           <h2>Endpoints</h2>
           <table class="docs-table">
             <tr><th>Method</th><th>Path</th><th>Description</th></tr>
