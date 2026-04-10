@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Claude Chat</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />  <style>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
     :root {
       --bg: #0e0e11;
       --surface: #16161a;
@@ -21,9 +25,13 @@
       --sidebar-w: 220px;
       --radius: 12px;
     }
- 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--bg);
@@ -32,7 +40,7 @@
       display: flex;
       overflow: hidden;
     }
- 
+
     body::before {
       content: '';
       position: fixed;
@@ -43,7 +51,7 @@
       pointer-events: none;
       z-index: 0;
     }
- 
+
     /* ── Sidebar ── */
     .sidebar {
       width: var(--sidebar-w);
@@ -56,13 +64,13 @@
       position: relative;
       z-index: 2;
     }
- 
+
     .sidebar-logo {
       padding: 28px 20px 22px;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
- 
+
     .logo-text {
       font-family: 'Playfair Display', serif;
       font-size: 20px;
@@ -70,7 +78,7 @@
       letter-spacing: 0.02em;
       display: block;
     }
- 
+
     .logo-sub {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -80,7 +88,7 @@
       margin-top: 3px;
       display: block;
     }
- 
+
     .sidebar-nav {
       flex: 1;
       padding: 12px 10px;
@@ -89,7 +97,7 @@
       gap: 2px;
       overflow-y: auto;
     }
- 
+
     .nav-section-label {
       font-family: 'DM Mono', monospace;
       font-size: 9px;
@@ -98,7 +106,7 @@
       color: var(--text-muted);
       padding: 10px 10px 5px;
     }
- 
+
     .nav-item {
       display: flex;
       align-items: center;
@@ -116,26 +124,26 @@
       width: 100%;
       text-align: left;
     }
- 
+
     .nav-item:hover {
       color: var(--text);
       background: var(--surface2);
     }
- 
+
     .nav-item.active {
       color: var(--accent);
       background: rgba(200, 169, 110, 0.08);
       border-color: rgba(200, 169, 110, 0.18);
       font-weight: 500;
     }
- 
+
     .nav-icon {
       font-size: 15px;
       width: 18px;
       text-align: center;
       flex-shrink: 0;
     }
- 
+
     .sidebar-footer {
       padding: 14px 20px;
       border-top: 1px solid var(--border);
@@ -144,28 +152,36 @@
       align-items: center;
       gap: 8px;
     }
- 
+
     .status-dot {
-      width: 7px; height: 7px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #4ade80;
       box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
       animation: pulse 2.5s ease-in-out infinite;
       flex-shrink: 0;
     }
- 
+
     .status-label {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
       color: var(--text-muted);
       letter-spacing: 0.1em;
     }
- 
+
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
     }
- 
+
     /* ── Main ── */
     .main {
       flex: 1;
@@ -176,7 +192,7 @@
       z-index: 1;
       overflow: hidden;
     }
- 
+
     /* ── Pages ── */
     .page {
       display: none;
@@ -186,13 +202,23 @@
       overflow: hidden;
       animation: pageIn 0.18s ease;
     }
-    .page.active { display: flex; }
- 
-    @keyframes pageIn {
-      from { opacity: 0; transform: translateX(8px); }
-      to   { opacity: 1; transform: translateX(0); }
+
+    .page.active {
+      display: flex;
     }
- 
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateX(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
     /* Empty pages */
     .page-empty {
       flex: 1;
@@ -205,13 +231,13 @@
       text-align: center;
       padding: 48px;
     }
- 
+
     .page-empty-icon {
       font-size: 52px;
       opacity: 0.12;
       line-height: 1;
     }
- 
+
     .page-empty h2 {
       font-family: 'Playfair Display', serif;
       font-size: 28px;
@@ -219,14 +245,14 @@
       opacity: 0.3;
       font-weight: 600;
     }
- 
+
     .page-empty p {
       font-size: 13px;
       line-height: 1.65;
       max-width: 340px;
       opacity: 0.45;
     }
- 
+
     .page-empty-badge {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -239,7 +265,7 @@
       margin-top: 6px;
       opacity: 0.6;
     }
- 
+
     /* ── Chat page ── */
     .chat-topbar {
       display: flex;
@@ -249,21 +275,21 @@
       background: var(--surface);
       flex-shrink: 0;
     }
- 
+
     .chat-topbar-title {
       font-family: 'Playfair Display', serif;
       font-size: 16px;
       color: var(--text);
       opacity: 0.85;
     }
- 
+
     .tab-bar-wrap {
       padding: 10px 22px 10px;
       background: var(--surface);
       flex-shrink: 0;
       border-bottom: 1px solid var(--border);
     }
- 
+
     .tab-bar {
       display: flex;
       gap: 2px;
@@ -274,8 +300,11 @@
       overflow-x: auto;
       scrollbar-width: none;
     }
-    .tab-bar::-webkit-scrollbar { display: none; }
- 
+
+    .tab-bar::-webkit-scrollbar {
+      display: none;
+    }
+
     .tab {
       display: flex;
       align-items: center;
@@ -292,32 +321,49 @@
       user-select: none;
       background: none;
     }
- 
-    .tab:hover { color: var(--text); background: var(--surface); }
+
+    .tab:hover {
+      color: var(--text);
+      background: var(--surface);
+    }
+
     .tab.active {
       color: var(--accent);
       background: rgba(200, 169, 110, 0.08);
       border-color: rgba(200, 169, 110, 0.2);
     }
- 
-    .tab-icon { font-size: 12px; line-height: 1; }
- 
+
+    .tab-icon {
+      font-size: 12px;
+      line-height: 1;
+    }
+
     .tab-close {
-      width: 15px; height: 15px;
+      width: 15px;
+      height: 15px;
       border-radius: 50%;
       border: none;
       background: transparent;
       color: var(--text-muted);
       cursor: pointer;
       font-size: 11px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-left: 1px;
       transition: all 0.13s;
       flex-shrink: 0;
     }
-    .tab-close:hover { background: rgba(255,255,255,0.1); color: var(--text); }
-    .tab-close.hidden { visibility: hidden; }
- 
+
+    .tab-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+    }
+
+    .tab-close.hidden {
+      visibility: hidden;
+    }
+
     .tab-label-input {
       background: transparent;
       border: none;
@@ -330,7 +376,7 @@
       width: 100px;
       padding: 0 2px;
     }
- 
+
     .new-tab-btn {
       padding: 7px 12px;
       border-radius: 8px;
@@ -344,12 +390,13 @@
       transition: all 0.14s;
       margin-left: 2px;
     }
+
     .new-tab-btn:hover {
       color: var(--accent);
       border-color: var(--accent);
       background: rgba(200, 169, 110, 0.05);
     }
- 
+
     /* ── Chat body: tabs share one layout, each tab owns its chat container ── */
     .chat-body {
       flex: 1;
@@ -360,7 +407,7 @@
       background: var(--bg);
       position: relative;
     }
- 
+
     /* Each tab's scrollable message area, hidden unless active */
     .chat-pane {
       flex: 1;
@@ -371,12 +418,24 @@
       gap: 16px;
       scroll-behavior: smooth;
     }
-    .chat-pane.active { display: flex; }
- 
-    .chat-pane::-webkit-scrollbar { width: 4px; }
-    .chat-pane::-webkit-scrollbar-track { background: transparent; }
-    .chat-pane::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
- 
+
+    .chat-pane.active {
+      display: flex;
+    }
+
+    .chat-pane::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .chat-pane::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-pane::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
     .empty-state {
       flex: 1;
       display: flex;
@@ -387,33 +446,54 @@
       color: var(--text-muted);
       text-align: center;
     }
- 
-    .empty-icon { font-size: 36px; opacity: 0.22; margin-bottom: 4px; }
- 
+
+    .empty-icon {
+      font-size: 36px;
+      opacity: 0.22;
+      margin-bottom: 4px;
+    }
+
     .empty-state h3 {
       font-family: 'Playfair Display', serif;
       font-size: 18px;
       color: var(--text);
       opacity: 0.4;
     }
- 
-    .empty-state p { font-size: 13px; max-width: 300px; line-height: 1.6; opacity: 0.65; }
- 
+
+    .empty-state p {
+      font-size: 13px;
+      max-width: 300px;
+      line-height: 1.6;
+      opacity: 0.65;
+    }
+
     .msg-wrap {
       display: flex;
       flex-direction: column;
       gap: 4px;
       animation: fadeUp 0.2s ease;
     }
- 
+
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
- 
-    .msg-wrap.user { align-items: flex-end; }
-    .msg-wrap.assistant { align-items: flex-start; }
- 
+
+    .msg-wrap.user {
+      align-items: flex-end;
+    }
+
+    .msg-wrap.assistant {
+      align-items: flex-start;
+    }
+
     .msg-label {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -422,7 +502,7 @@
       color: var(--text-muted);
       padding: 0 4px;
     }
- 
+
     .msg-bubble {
       max-width: 78%;
       padding: 12px 16px;
@@ -432,23 +512,25 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
- 
+
     .msg-wrap.user .msg-bubble {
       background: var(--user-bg);
       border: 1px solid var(--user-border);
       border-bottom-right-radius: 3px;
       color: #d4d0f0;
     }
- 
+
     .msg-wrap.assistant .msg-bubble {
       background: var(--claude-bg);
       border: 1px solid var(--claude-border);
       border-bottom-left-radius: 3px;
       color: #cce8d8;
     }
- 
+
     .thinking {
-      display: flex; align-items: center; gap: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
       padding: 12px 16px;
       background: var(--claude-bg);
       border: 1px solid var(--claude-border);
@@ -456,29 +538,49 @@
       border-bottom-left-radius: 3px;
       width: fit-content;
     }
- 
+
     .thinking span {
-      width: 6px; height: 6px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--accent);
       animation: blink 1.2s ease-in-out infinite;
     }
-    .thinking span:nth-child(2) { animation-delay: 0.2s; }
-    .thinking span:nth-child(3) { animation-delay: 0.4s; }
- 
-    @keyframes blink {
-      0%, 100% { opacity: 0.2; transform: scale(0.8); }
-      50%       { opacity: 1;   transform: scale(1.1); }
+
+    .thinking span:nth-child(2) {
+      animation-delay: 0.2s;
     }
- 
+
+    .thinking span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 0.2;
+        transform: scale(0.8);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
+
     .input-area {
       padding: 14px 0 18px;
       flex-shrink: 0;
       background: var(--bg);
     }
- 
-    .input-row { display: flex; gap: 10px; align-items: flex-end; }
- 
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
     .input-field {
       flex: 1;
       background: var(--surface);
@@ -494,27 +596,43 @@
       min-height: 44px;
       max-height: 120px;
     }
- 
-    .input-field::placeholder { color: var(--text-muted); }
-    .input-field:focus { border-color: rgba(200, 169, 110, 0.4); }
- 
+
+    .input-field::placeholder {
+      color: var(--text-muted);
+    }
+
+    .input-field:focus {
+      border-color: rgba(200, 169, 110, 0.4);
+    }
+
     .send-btn {
-      width: 44px; height: 44px;
+      width: 44px;
+      height: 44px;
       border-radius: 10px;
       background: var(--accent);
       border: none;
       color: #0e0e11;
       cursor: pointer;
       font-size: 18px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
       transition: all 0.15s;
       font-weight: bold;
     }
- 
-    .send-btn:hover:not(:disabled) { background: #dbbe85; transform: scale(1.04); }
-    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
- 
+
+    .send-btn:hover:not(:disabled) {
+      background: #dbbe85;
+      transform: scale(1.04);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .input-hint {
       font-size: 11px;
       color: var(--text-muted);
@@ -524,124 +642,125 @@
     }
   </style>
 </head>
+
 <body>
- 
-<!-- Sidebar -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <span class="logo-text">Claude</span>
-    <span class="logo-sub">MCP workspace</span>
-  </div>
- 
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">Pages</div>
-    <button class="nav-item active" data-page="home">
-      <span class="nav-icon">⌂</span> Home
-    </button>
-    <button class="nav-item" data-page="about">
-      <span class="nav-icon">◎</span> About
-    </button>
-    <button class="nav-item" data-page="mcps">
-      <span class="nav-icon">⬡</span> MCPs Available
-    </button>
-    <button class="nav-item" data-page="presentation">
-      <span class="nav-icon">▣</span> Presentation
-    </button>
-    <button class="nav-item" data-page="architecture">
-      <span class="nav-icon">⬗</span> Architecture
-    </button>
-    <button class="nav-item" data-page="docs">
-      <span class="nav-icon">≡</span> Documentation
-    </button>
- 
-    <div class="nav-section-label" style="margin-top:14px;">Chat</div>
-    <button class="nav-item" data-page="chat">
-      <span class="nav-icon">✦</span> Chat with Claude
-    </button>
-  </nav>
- 
-  <div class="sidebar-footer">
-    <div class="status-dot"></div>
-    <span class="status-label">Connected</span>
-  </div>
-</aside>
- 
-<!-- Main content -->
-<main class="main">
- 
-  <div class="page active" id="page-home">
-    <div class="page-empty">
-      <div class="page-empty-icon">⌂</div>
-      <h2>Home</h2>
-      <p>Put something here</p>
-      <div class="page-empty-badge">Coming soon</div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text">Claude</span>
+      <span class="logo-sub">MCP workspace</span>
     </div>
-  </div>
- 
-  <div class="page" id="page-about">
-    <div class="page-empty">
-      <div class="page-empty-icon">◎</div>
-      <h2>About</h2>
-      <p>Explain project here</p>
-      <div class="page-empty-badge">Coming soon</div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Pages</div>
+      <button class="nav-item active" data-page="home">
+        <span class="nav-icon">⌂</span> Home
+      </button>
+      <button class="nav-item" data-page="about">
+        <span class="nav-icon">◎</span> About
+      </button>
+      <button class="nav-item" data-page="mcps">
+        <span class="nav-icon">⬡</span> MCPs Available
+      </button>
+      <button class="nav-item" data-page="presentation">
+        <span class="nav-icon">▣</span> Presentation
+      </button>
+      <button class="nav-item" data-page="architecture">
+        <span class="nav-icon">⬗</span> Architecture
+      </button>
+      <button class="nav-item" data-page="docs">
+        <span class="nav-icon">≡</span> Documentation
+      </button>
+
+      <div class="nav-section-label" style="margin-top:14px;">Chat</div>
+      <button class="nav-item" data-page="chat">
+        <span class="nav-icon">✦</span> Chat with Claude
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="status-dot"></div>
+      <span class="status-label">Connected</span>
     </div>
-  </div>
- 
-  <div class="page" id="page-mcps">
-    <div class="page-empty">
-      <div class="page-empty-icon">⬡</div>
-      <h2>MCPs Available</h2>
-      <p>List and explain MCPs here</p>
-      <div class="page-empty-badge">Coming soon</div>
-    </div>
-  </div>
- 
-  <div class="page" id="page-presentation">
-    <div class="page-empty">
-      <div class="page-empty-icon">▣</div>
-      <h2>Presentation</h2>
-      <p>Put slides here</p>
-      <div class="page-empty-badge">Coming soon</div>
-    </div>
-  </div>
- 
-  <div class="page" id="page-architecture">
-    <div class="page-empty">
-      <div class="page-empty-icon">⬗</div>
-      <h2>Architecture</h2>
-      <p>Explain architecture</p>
-      <div class="page-empty-badge">Coming soon</div>
-    </div>
-  </div>
- 
-  <div class="page" id="page-docs">
-    <div class="page-empty">
-      <div class="page-empty-icon">≡</div>
-      <h2>Documentation</h2>
-      <p>Documentation here</p>
-      <div class="page-empty-badge">Coming soon</div>
-    </div>
-  </div>
- 
-  <!-- Chat page -->
-  <div class="page" id="page-chat">
-    <div class="chat-topbar">
-      <span class="chat-topbar-title">Chat with Claude</span>
-    </div>
- 
-    <div class="tab-bar-wrap">
-      <div class="tab-bar" id="tabBar">
-        <button class="new-tab-btn" id="newTabBtn" title="New conversation">+</button>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <div class="page active" id="page-home">
+      <div class="page-empty">
+        <div class="page-empty-icon">⌂</div>
+        <h2>Home</h2>
+        <p>Put something here</p>
+        <div class="page-empty-badge">Coming soon</div>
       </div>
     </div>
- 
-    <div class="chat-body" id="chatBody">
-      <!-- chat panes are injected here by JS, one per tab -->
- 
-      <div class="input-area">
-  <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
-    <label for="mcpSelect" style="font-size:12px; color: var(--text-muted);">MCP</label>
-    <select id="mcpSelect" style="
+
+    <div class="page" id="page-about">
+      <div class="page-empty">
+        <div class="page-empty-icon">◎</div>
+        <h2>About</h2>
+        <p>Explain project here</p>
+        <div class="page-empty-badge">Coming soon</div>
+      </div>
+    </div>
+
+    <div class="page" id="page-mcps">
+      <div class="page-empty">
+        <div class="page-empty-icon">⬡</div>
+        <h2>MCPs Available</h2>
+        <p>List and explain MCPs here</p>
+        <div class="page-empty-badge">Coming soon</div>
+      </div>
+    </div>
+
+    <div class="page" id="page-presentation">
+      <div class="page-empty">
+        <div class="page-empty-icon">▣</div>
+        <h2>Presentation</h2>
+        <p>Put slides here</p>
+        <div class="page-empty-badge">Coming soon</div>
+      </div>
+    </div>
+
+    <div class="page" id="page-architecture">
+      <div class="page-empty">
+        <div class="page-empty-icon">⬗</div>
+        <h2>Architecture</h2>
+        <p>Explain architecture</p>
+        <div class="page-empty-badge">Coming soon</div>
+      </div>
+    </div>
+
+    <div class="page" id="page-docs">
+      <div class="page-empty">
+        <div class="page-empty-icon">≡</div>
+        <h2>Documentation</h2>
+        <p>Documentation here</p>
+        <div class="page-empty-badge">Coming soon</div>
+      </div>
+    </div>
+
+    <!-- Chat page -->
+    <div class="page" id="page-chat">
+      <div class="chat-topbar">
+        <span class="chat-topbar-title">Chat with Claude</span>
+      </div>
+
+      <div class="tab-bar-wrap">
+        <div class="tab-bar" id="tabBar">
+          <button class="new-tab-btn" id="newTabBtn" title="New conversation">+</button>
+        </div>
+      </div>
+
+      <div class="chat-body" id="chatBody">
+        <!-- chat panes are injected here by JS, one per tab -->
+
+        <div class="input-area">
+          <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
+            <label for="mcpSelect" style="font-size:12px; color: var(--text-muted);">MCP</label>
+            <select id="mcpSelect" style="
       background: var(--surface);
       color: var(--text);
       border: 1px solid var(--border);
@@ -649,340 +768,463 @@
       padding: 8px 10px;
       font-size: 13px;
     "></select>
-  </div>
+          </div>
 
-        <div class="input-row">
-          <textarea class="input-field" id="input" placeholder="Message Claude…" rows="1"></textarea>
-          <button class="send-btn" id="send" title="Send">↑</button>
+          <div class="input-row">
+            <textarea class="input-field" id="input" placeholder="Message Claude…" rows="1"></textarea>
+            <button class="send-btn" id="send" title="Send">↑</button>
+          </div>
+          <div class="input-hint">Enter to send &nbsp;·&nbsp; Shift+Enter for newline</div>
         </div>
-        <div class="input-hint">Enter to send &nbsp;·&nbsp; Shift+Enter for newline</div>
       </div>
     </div>
-  </div>
- 
-</main>
- 
-<script>
-  // ── Sidebar navigation ──
-  const navItems = document.querySelectorAll('.nav-item[data-page]');
-  const pages = document.querySelectorAll('.page');
- 
-  function showPage(pageId) {
-    pages.forEach(p => p.classList.remove('active'));
-    navItems.forEach(n => n.classList.remove('active'));
-    const page = document.getElementById('page-' + pageId);
-    if (page) page.classList.add('active');
-    const nav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
-    if (nav) nav.classList.add('active');
-  }
- 
-  navItems.forEach(item => {
-    item.addEventListener('click', () => showPage(item.dataset.page));
-  });
- 
-  // ── Tab state ──
-  // Each tab owns:
-  //   id        - unique number
-  //   name      - display label
-  //   history   - [{role, content}, ...] sent to the API (kept in sync with actual responses)
-  //   pane      - the DOM element (.chat-pane) that persists for this tab's lifetime
-  //   loading   - boolean, true while a request is in-flight
-  let tabs = [];
-  let activeTabId = null;
-  let nextTabId = 1;
- 
-  const chatBody = document.getElementById('chatBody');
-  const inputArea = chatBody.querySelector('.input-area');
-  const mcpSelect = document.getElementById('mcpSelect');
 
-  async function loadMcps() {
-    try {
-      const res = await fetch("/api/mcps");
-      const data = await res.json();
+  </main>
 
-      mcpSelect.innerHTML = "";
+  <script>
+    // ── Sidebar navigation ──
+    const navItems = document.querySelectorAll('.nav-item[data-page]');
+    const pages = document.querySelectorAll('.page');
 
-      data.mcps.forEach((mcp) => {
-        const option = document.createElement("option");
-        option.value = mcp.id;
-        option.textContent = mcp.label;
-        mcpSelect.appendChild(option);
-      });
-    } catch (err) {
-      console.error("Failed to load MCPs:", err);
+    function showPage(pageId) {
+      pages.forEach(p => p.classList.remove('active'));
+      navItems.forEach(n => n.classList.remove('active'));
+      const page = document.getElementById('page-' + pageId);
+      if (page) page.classList.add('active');
+      const nav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+      if (nav) nav.classList.add('active');
     }
-  }
- 
-  function createTab(name) {
-    const id = nextTabId++;
- 
-    // Create a dedicated, persistent DOM pane for this tab
-    const pane = document.createElement('div');
-    pane.className = 'chat-pane';
-    pane.dataset.tabId = id;
- 
-    // Show empty state initially
-    pane.appendChild(buildEmptyState());
- 
-    // Insert before the input area so input stays at the bottom
-    chatBody.insertBefore(pane, inputArea);
- 
-    tabs.push({ id, name: name || `Chat ${id}`, history: [], pane, loading: false });
-    return id;
-  }
- 
-  function getTab(id) { return tabs.find(t => t.id === id); }
- 
-  function switchTab(id) {
-    activeTabId = id;
-    // Show/hide panes
-    tabs.forEach(t => t.pane.classList.toggle('active', t.id === id));
-    renderTabBar();
-    // Scroll active pane to bottom
-    const tab = getTab(id);
-    if (tab) tab.pane.scrollTop = tab.pane.scrollHeight;
-  }
- 
-  function renameTab(id) {
-    const tab = getTab(id);
-    if (!tab) return;
-    const tabEl = document.querySelector(`.tab[data-id="${id}"]`);
-    if (!tabEl) return;
-    const labelEl = tabEl.querySelector('.tab-label');
-    if (!labelEl) return;
- 
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'tab-label-input';
-    input.value = tab.name;
-    labelEl.replaceWith(input);
-    input.focus();
-    input.select();
- 
-    function commit() {
-      tab.name = input.value.trim() || tab.name;
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => showPage(item.dataset.page));
+    });
+
+    // ── Tab state ──
+    // Each tab owns:
+    //   id        - unique number
+    //   name      - display label
+    //   history   - [{role, content}, ...] sent to the API (kept in sync with actual responses)
+    //   pane      - the DOM element (.chat-pane) that persists for this tab's lifetime
+    //   loading   - boolean, true while a request is in-flight
+    let tabs = [];
+    let activeTabId = null;
+    let nextTabId = 1;
+
+    const chatBody = document.getElementById('chatBody');
+    const inputArea = chatBody.querySelector('.input-area');
+    const mcpSelect = document.getElementById('mcpSelect');
+
+    async function loadMcps() {
+      // try {
+      //   const res = await fetch("/api/mcps");
+      //   const data = await res.json();
+
+      //   mcpSelect.innerHTML = "";
+
+      //   data.mcps.forEach((mcp) => {
+      //     const option = document.createElement("option");
+      //     option.value = mcp.id;
+      //     option.textContent = mcp.label;
+      //     mcpSelect.appendChild(option);
+      //   });
+      try {
+        const res = await fetch("/api/mcps");
+        const data = await res.json();
+
+        mcpSelect.innerHTML = "";
+
+        data.mcps.forEach((mcp) => {
+          const option = document.createElement("option");
+          option.value = mcp.id;
+          option.textContent = mcp.label;
+          mcpSelect.appendChild(option);
+        });
+
+        if (!mcpSelect.value && data.mcps.length > 0) {
+          mcpSelect.value = data.mcps[0].id;
+        }
+      } catch (err) {
+        console.error("Failed to load MCPs:", err);
+      }
+    }
+
+    function createTab(name) {
+      const id = nextTabId++;
+
+      // Create a dedicated, persistent DOM pane for this tab
+      const pane = document.createElement('div');
+      pane.className = 'chat-pane';
+      pane.dataset.tabId = id;
+
+      // Show empty state initially
+      pane.appendChild(buildEmptyState());
+
+      // Insert before the input area so input stays at the bottom
+      chatBody.insertBefore(pane, inputArea);
+
+      tabs.push({ id, name: name || `Chat ${id}`, history: [], pane, loading: false });
+      return id;
+    }
+
+    function getTab(id) { return tabs.find(t => t.id === id); }
+
+    function switchTab(id) {
+      activeTabId = id;
+      // Show/hide panes
+      tabs.forEach(t => t.pane.classList.toggle('active', t.id === id));
       renderTabBar();
+      // Scroll active pane to bottom
+      const tab = getTab(id);
+      if (tab) tab.pane.scrollTop = tab.pane.scrollHeight;
     }
- 
-    input.addEventListener('blur', commit);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-      if (e.key === 'Escape') { input.value = tab.name; input.blur(); }
-      e.stopPropagation();
-    });
-    input.addEventListener('click', (e) => e.stopPropagation());
-  }
- 
-  function closeTab(id) {
-    if (tabs.length === 1) return;
-    const idx = tabs.findIndex(t => t.id === id);
-    const tab = getTab(id);
-    if (tab) tab.pane.remove();
-    tabs = tabs.filter(t => t.id !== id);
-    if (activeTabId === id) {
-      activeTabId = tabs[Math.min(idx, tabs.length - 1)].id;
+
+    function renameTab(id) {
+      const tab = getTab(id);
+      if (!tab) return;
+      const tabEl = document.querySelector(`.tab[data-id="${id}"]`);
+      if (!tabEl) return;
+      const labelEl = tabEl.querySelector('.tab-label');
+      if (!labelEl) return;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'tab-label-input';
+      input.value = tab.name;
+      labelEl.replaceWith(input);
+      input.focus();
+      input.select();
+
+      function commit() {
+        tab.name = input.value.trim() || tab.name;
+        renderTabBar();
+      }
+
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+        if (e.key === 'Escape') { input.value = tab.name; input.blur(); }
+        e.stopPropagation();
+      });
+      input.addEventListener('click', (e) => e.stopPropagation());
     }
-    renderTabBar();
-    switchTab(activeTabId);
-  }
- 
-  function renderTabBar() {
-    const bar = document.getElementById('tabBar');
-    bar.querySelectorAll('.tab').forEach(el => el.remove());
-    const newBtn = document.getElementById('newTabBtn');
- 
-    tabs.forEach(tab => {
-      const el = document.createElement('button');
-      el.className = 'tab' + (tab.id === activeTabId ? ' active' : '');
-      el.dataset.id = tab.id;
- 
-      const icon = document.createElement('span');
-      icon.className = 'tab-icon';
-      icon.textContent = '◈';
- 
-      const label = document.createElement('span');
-      label.className = 'tab-label';
-      label.textContent = tab.name;
- 
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'tab-close' + (tabs.length === 1 ? ' hidden' : '');
-      closeBtn.textContent = '×';
-      closeBtn.title = 'Close';
-      closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeTab(tab.id); });
- 
-      el.appendChild(icon);
-      el.appendChild(label);
-      el.appendChild(closeBtn);
-      el.addEventListener('click', () => switchTab(tab.id));
-      el.addEventListener('dblclick', (e) => { e.stopPropagation(); switchTab(tab.id); renameTab(tab.id); });
- 
-      bar.insertBefore(el, newBtn);
-    });
-  }
- 
-  // ── DOM helpers ──
- 
-  function buildEmptyState() {
-    const div = document.createElement('div');
-    div.className = 'empty-state';
-    div.innerHTML = `
+
+    function closeTab(id) {
+      if (tabs.length === 1) return;
+      const idx = tabs.findIndex(t => t.id === id);
+      const tab = getTab(id);
+      if (tab) tab.pane.remove();
+      tabs = tabs.filter(t => t.id !== id);
+      if (activeTabId === id) {
+        activeTabId = tabs[Math.min(idx, tabs.length - 1)].id;
+      }
+      renderTabBar();
+      switchTab(activeTabId);
+    }
+
+    function renderTabBar() {
+      const bar = document.getElementById('tabBar');
+      bar.querySelectorAll('.tab').forEach(el => el.remove());
+      const newBtn = document.getElementById('newTabBtn');
+
+      tabs.forEach(tab => {
+        const el = document.createElement('button');
+        el.className = 'tab' + (tab.id === activeTabId ? ' active' : '');
+        el.dataset.id = tab.id;
+
+        const icon = document.createElement('span');
+        icon.className = 'tab-icon';
+        icon.textContent = '◈';
+
+        const label = document.createElement('span');
+        label.className = 'tab-label';
+        label.textContent = tab.name;
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'tab-close' + (tabs.length === 1 ? ' hidden' : '');
+        closeBtn.textContent = '×';
+        closeBtn.title = 'Close';
+        closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeTab(tab.id); });
+
+        el.appendChild(icon);
+        el.appendChild(label);
+        el.appendChild(closeBtn);
+        el.addEventListener('click', () => switchTab(tab.id));
+        el.addEventListener('dblclick', (e) => { e.stopPropagation(); switchTab(tab.id); renameTab(tab.id); });
+
+        bar.insertBefore(el, newBtn);
+      });
+    }
+
+    // ── DOM helpers ──
+
+    function buildEmptyState() {
+      const div = document.createElement('div');
+      div.className = 'empty-state';
+      div.innerHTML = `
       <div class="empty-icon">✦</div>
       <h3>New Conversation</h3>
       <p>Start a conversation with Claude. Double-click a tab to rename it.</p>
     `;
-    return div;
-  }
- 
-  function appendMessage(pane, role, text) {
-    // Remove empty state if present
-    pane.querySelector('.empty-state')?.remove();
- 
-    const wrap = document.createElement('div');
-    wrap.className = `msg-wrap ${role}`;
- 
-    const label = document.createElement('div');
-    label.className = 'msg-label';
-    label.textContent = role === 'user' ? 'You' : 'Claude';
- 
-    const bubble = document.createElement('div');
-    bubble.className = 'msg-bubble';
-    bubble.textContent = text;
- 
-    wrap.appendChild(label);
-    wrap.appendChild(bubble);
-    pane.appendChild(wrap);
-    pane.scrollTop = pane.scrollHeight;
-    return wrap;
-  }
- 
-  function addThinkingIndicator(pane) {
-    const wrap = document.createElement('div');
-    wrap.className = 'msg-wrap assistant thinking-wrap';
- 
-    const label = document.createElement('div');
-    label.className = 'msg-label';
-    label.textContent = 'Claude';
- 
-    const ind = document.createElement('div');
-    ind.className = 'thinking';
-    ind.innerHTML = '<span></span><span></span><span></span>';
- 
-    wrap.appendChild(label);
-    wrap.appendChild(ind);
-    pane.appendChild(wrap);
-    pane.scrollTop = pane.scrollHeight;
-    return wrap; // caller holds a reference — no ID needed
-  }
- 
-  // ── Send message ──
- 
-  async function sendMessage() {
-    const inputEl = document.getElementById('input');
-    const sendBtn = document.getElementById('send');
-    const message = inputEl.value.trim();
-    if (!message) return;
- 
-    const tab = getTab(activeTabId);
-    if (!tab) return;
- 
-    // Prevent double-send while this tab is already loading
-    if (tab.loading) return;
- 
-    // Capture which tab this request belongs to (closed over in the async call)
-    const tabId = tab.id;
- 
-    // Update UI immediately
-    inputEl.value = '';
-    inputEl.style.height = 'auto';
-    sendBtn.disabled = true;
-    tab.loading = true;
- 
-    appendMessage(tab.pane, 'user', message);
- 
-    // Auto-name the tab on first message
-    if (tab.history.length === 0) {
-      tab.name = message.length > 22 ? message.slice(0, 22) + '…' : message;
-      renderTabBar();
+      return div;
     }
- 
-    // Snapshot history *before* the request so retries are safe
-    const historySnapshot = [...tab.history];
- 
-    const thinkingEl = addThinkingIndicator(tab.pane);
- 
-    try {
-      const res = await fetch("/api/agent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message,
-          history: historySnapshot,
-          mcpId: mcpSelect.value
-        })
-      });
- 
-      const data = await res.json();
- 
-      // Always remove the thinking indicator from the tab's own pane
-      thinkingEl.remove();
- 
-      const reply = res.ok
-        ? data.reply
-        : `Error: ${data.error || "Request failed"}`;
- 
-      // Write reply into the tab's pane (even if the user has switched away)
-      const targetTab = getTab(tabId);
-      if (targetTab) {
-        appendMessage(targetTab.pane, 'assistant', reply);
- 
-        // Only advance history on success so the next request has a consistent context
-        if (res.ok) {
-          targetTab.history.push({ role: 'user', content: message });
-          targetTab.history.push({ role: 'assistant', content: reply });
+
+    // function appendMessage(pane, role, text) {
+    //   // Remove empty state if present
+    //   pane.querySelector('.empty-state')?.remove();
+
+    //   const wrap = document.createElement('div');
+    //   wrap.className = `msg-wrap ${role}`;
+
+    //   const label = document.createElement('div');
+    //   label.className = 'msg-label';
+    //   label.textContent = role === 'user' ? 'You' : 'Claude';
+
+    //   const bubble = document.createElement('div');
+    //   bubble.className = 'msg-bubble';
+    //   bubble.textContent = text;
+
+    //   wrap.appendChild(label);
+    //   wrap.appendChild(bubble);
+    //   pane.appendChild(wrap);
+    //   pane.scrollTop = pane.scrollHeight;
+    //   return wrap;
+    // }
+    function appendMessage(pane, role, text, meta = "") {
+      pane.querySelector('.empty-state')?.remove();
+
+      const wrap = document.createElement('div');
+      wrap.className = `msg-wrap ${role}`;
+
+      const label = document.createElement('div');
+      label.className = 'msg-label';
+      label.textContent = role === 'user' ? 'You' : 'Claude';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.textContent = text;
+
+      wrap.appendChild(label);
+      wrap.appendChild(bubble);
+
+      if (meta) {
+        const metaEl = document.createElement('div');
+        metaEl.className = 'msg-label';
+        metaEl.style.marginTop = '4px';
+        metaEl.style.fontSize = '9px';
+        metaEl.style.opacity = '0.8';
+        metaEl.textContent = meta;
+        wrap.appendChild(metaEl);
+      }
+
+      pane.appendChild(wrap);
+      pane.scrollTop = pane.scrollHeight;
+      return wrap;
+    }
+
+    function addThinkingIndicator(pane) {
+      const wrap = document.createElement('div');
+      wrap.className = 'msg-wrap assistant thinking-wrap';
+
+      const label = document.createElement('div');
+      label.className = 'msg-label';
+      label.textContent = 'Claude';
+
+      const ind = document.createElement('div');
+      ind.className = 'thinking';
+      ind.innerHTML = '<span></span><span></span><span></span>';
+
+      wrap.appendChild(label);
+      wrap.appendChild(ind);
+      pane.appendChild(wrap);
+      pane.scrollTop = pane.scrollHeight;
+      return wrap; // caller holds a reference — no ID needed
+    }
+
+    // ── Send message ──
+    async function sendMessage() {
+      const inputEl = document.getElementById('input');
+      const sendBtn = document.getElementById('send');
+      const message = inputEl.value.trim();
+      if (!message) return;
+
+      const tab = getTab(activeTabId);
+      if (!tab || tab.loading) return;
+
+      const tabId = tab.id;
+
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+      sendBtn.disabled = true;
+      tab.loading = true;
+
+      appendMessage(tab.pane, 'user', message);
+
+      if (tab.history.length === 0) {
+        tab.name = message.length > 22 ? message.slice(0, 22) + '…' : message;
+        renderTabBar();
+      }
+
+      const historySnapshot = [...tab.history];
+      const thinkingEl = addThinkingIndicator(tab.pane);
+
+      try {
+        const res = await fetch("/api/agent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message,
+            history: historySnapshot,
+            mcpId: mcpSelect.value
+          })
+        });
+
+        const data = await res.json();
+        thinkingEl.remove();
+
+        const reply = res.ok
+          ? data.reply
+          : `Error: ${data.error || "Request failed"}`;
+
+        let meta = "";
+        if (res.ok && data.selectedMcp) {
+          meta = data.usedTool
+            ? `Used: ${data.selectedMcp.label}`
+            : `Selected: ${data.selectedMcp.label}`;
+        }
+
+        const targetTab = getTab(tabId);
+        if (targetTab) {
+          appendMessage(targetTab.pane, 'assistant', reply, meta);
+
+          if (res.ok) {
+            targetTab.history.push({ role: 'user', content: message });
+            targetTab.history.push({ role: 'assistant', content: reply });
+          }
+        }
+      } catch (e) {
+        thinkingEl.remove();
+        const targetTab = getTab(tabId);
+        if (targetTab) {
+          appendMessage(targetTab.pane, 'assistant', 'Network error. Check server and try again.');
+        }
+      } finally {
+        const targetTab = getTab(tabId);
+        if (targetTab) targetTab.loading = false;
+
+        if (tabId === activeTabId) {
+          sendBtn.disabled = false;
+          inputEl.focus();
         }
       }
-    } catch (e) {
-      thinkingEl.remove();
- 
-      const targetTab = getTab(tabId);
-      if (targetTab) {
-        appendMessage(targetTab.pane, 'assistant', 'Network error. Check server and try again.');
-        // Do NOT push to history — the exchange was incomplete
-      }
-    } finally {
-      const targetTab = getTab(tabId);
-      if (targetTab) targetTab.loading = false;
- 
-      // Only re-enable the send button if this is still the active tab
-      if (tabId === activeTabId) {
-        sendBtn.disabled = false;
-        inputEl.focus();
-      }
     }
-  }
- 
-  // ── Input events ──
- 
-  const inputEl = document.getElementById('input');
-  inputEl.addEventListener('input', () => {
-    inputEl.style.height = 'auto';
-    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
-  });
-  inputEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  });
- 
-  document.getElementById('send').addEventListener('click', sendMessage);
-  document.getElementById('newTabBtn').addEventListener('click', () => {
-    const id = createTab();
-    switchTab(id);
-  });
- 
-  // ── Init ──
-  loadMcps();
+    // async function sendMessage() {
+    //   const inputEl = document.getElementById('input');
+    //   const sendBtn = document.getElementById('send');
+    //   const message = inputEl.value.trim();
+    //   if (!message) return;
 
-  const firstId = createTab('New Chat');
-  switchTab(firstId);
-</script>
+    //   const tab = getTab(activeTabId);
+    //   if (!tab) return;
+
+    //   // Prevent double-send while this tab is already loading
+    //   if (tab.loading) return;
+
+    //   // Capture which tab this request belongs to (closed over in the async call)
+    //   const tabId = tab.id;
+
+    //   // Update UI immediately
+    //   inputEl.value = '';
+    //   inputEl.style.height = 'auto';
+    //   sendBtn.disabled = true;
+    //   tab.loading = true;
+
+    //   appendMessage(tab.pane, 'user', message);
+
+    //   // Auto-name the tab on first message
+    //   if (tab.history.length === 0) {
+    //     tab.name = message.length > 22 ? message.slice(0, 22) + '…' : message;
+    //     renderTabBar();
+    //   }
+
+    //   // Snapshot history *before* the request so retries are safe
+    //   const historySnapshot = [...tab.history];
+
+    //   const thinkingEl = addThinkingIndicator(tab.pane);
+
+    //   try {
+    //     const res = await fetch("/api/agent", {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({
+    //         message,
+    //         history: historySnapshot,
+    //         mcpId: mcpSelect.value
+    //       })
+    //     });
+
+    //     const data = await res.json();
+
+    //     // Always remove the thinking indicator from the tab's own pane
+    //     thinkingEl.remove();
+
+    //     const reply = res.ok
+    //       ? data.reply
+    //       : `Error: ${data.error || "Request failed"}`;
+
+    //     // Write reply into the tab's pane (even if the user has switched away)
+    //     const targetTab = getTab(tabId);
+    //     if (targetTab) {
+    //       appendMessage(targetTab.pane, 'assistant', reply);
+
+    //       // Only advance history on success so the next request has a consistent context
+    //       if (res.ok) {
+    //         targetTab.history.push({ role: 'user', content: message });
+    //         targetTab.history.push({ role: 'assistant', content: reply });
+    //       }
+    //     }
+    //   } catch (e) {
+    //     thinkingEl.remove();
+
+    //     const targetTab = getTab(tabId);
+    //     if (targetTab) {
+    //       appendMessage(targetTab.pane, 'assistant', 'Network error. Check server and try again.');
+    //       // Do NOT push to history — the exchange was incomplete
+    //     }
+    //   } finally {
+    //     const targetTab = getTab(tabId);
+    //     if (targetTab) targetTab.loading = false;
+
+    //     // Only re-enable the send button if this is still the active tab
+    //     if (tabId === activeTabId) {
+    //       sendBtn.disabled = false;
+    //       inputEl.focus();
+    //     }
+    //   }
+    // }
+
+    // ── Input events ──
+
+    const inputEl = document.getElementById('input');
+    inputEl.addEventListener('input', () => {
+      inputEl.style.height = 'auto';
+      inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+    });
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+
+    document.getElementById('send').addEventListener('click', sendMessage);
+    document.getElementById('newTabBtn').addEventListener('click', () => {
+      const id = createTab();
+      switchTab(id);
+    });
+
+    // ── Init ──
+    loadMcps();
+
+    const firstId = createTab('New Chat');
+    switchTab(firstId);
+  </script>
 </body>
+
 </html>
