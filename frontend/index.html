@@ -770,7 +770,7 @@
     /* ── MCPs page ── */
     .mcp-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
     .mcp-card {
@@ -1365,6 +1365,7 @@
         <div class="home-status-items">
           <div class="home-status-item"><div class="dot"></div> US Census MCP</div>
           <div class="home-status-item"><div class="dot"></div> TMDB Movies &amp; TV MCP</div>
+          <div class="home-status-item"><div class="dot"></div> News MCP</div>
           <div class="home-status-item"><div class="dot"></div> Claude claude-opus-4-5</div>
         </div>
       </div>
@@ -1533,6 +1534,40 @@
             Try in Chat →
           </button>
         </div>
+
+        <!-- News MCP -->
+        <div class="mcp-card">
+          <div class="mcp-card-header">
+            <div class="mcp-card-icon">📰</div>
+            <span class="mcp-card-live">Live</span>
+          </div>
+          <h2>News MCP</h2>
+          <p class="mcp-card-desc">Connects Claude to the NewsAPI, providing access to breaking headlines, searchable article archives, and publisher listings across categories, languages, and countries.</p>
+          <div>
+            <div class="mcp-tools-label">Available tools</div>
+            <div class="mcp-tools-list">
+              <div class="mcp-tool-item">
+                <span class="mcp-tool-name">get-top-headlines</span>
+                <span class="mcp-tool-desc">Breaking headlines filtered by country, category, or keyword</span>
+              </div>
+              <div class="mcp-tool-item">
+                <span class="mcp-tool-name">search-news</span>
+                <span class="mcp-tool-desc">Full-text article search with date range, language, and sort order</span>
+              </div>
+              <div class="mcp-tool-item">
+                <span class="mcp-tool-name">list-news-sources</span>
+                <span class="mcp-tool-desc">Browse available publishers by category, language, or country</span>
+              </div>
+            </div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:10px 0 4px;">
+            Transport: Node.js child process · stdio
+          </div>
+          <button class="mcp-try-btn" onclick="document.getElementById('mcpSelect').value='news'; showPage('chat');">
+            Try in Chat →
+          </button>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1607,6 +1642,10 @@
                 <span class="slide-point-marker">🎬</span>
                 <span><strong style="color:var(--text)">TMDB MCP</strong> — Search movies and TV shows, get cast &amp; crew, trending content, and full film metadata from The Movie Database.</span>
               </div>
+              <div class="slide-point">
+                <span class="slide-point-marker">📰</span>
+                <span><strong style="color:var(--text)">News MCP</strong> — Live breaking headlines, full-text article search, and publisher listings powered by NewsAPI.</span>
+              </div>
             </div>
             <div class="slide-tag-grid">
               <span class="slide-tag">search-movies</span>
@@ -1615,6 +1654,9 @@
               <span class="slide-tag">get-population</span>
               <span class="slide-tag">get-demographics</span>
               <span class="slide-tag">search-tv-shows</span>
+              <span class="slide-tag">get-top-headlines</span>
+              <span class="slide-tag">search-news</span>
+              <span class="slide-tag">list-news-sources</span>
             </div>
           </div>
         </div>
@@ -1655,8 +1697,8 @@
                 <span>"Who directed Interstellar and what other films have they made?"</span>
               </div>
               <div class="slide-point">
-                <span class="slide-point-marker">🎬</span>
-                <span>"What are the top trending movies this week?"</span>
+                <span class="slide-point-marker">📰</span>
+                <span>"What are the top technology headlines in the US today?"</span>
               </div>
             </div>
             <div style="margin-top:28px;">
@@ -1802,7 +1844,7 @@
 {
   <span class="str">"message"</span>: <span class="str">"What are the top trending movies this week?"</span>,
   <span class="str">"history"</span>: [],              <span class="cm">// optional conversation history</span>
-  <span class="str">"mcpId"</span>:   <span class="str">"tmdb"</span>           <span class="cm">// "tmdb" or "census"</span>
+  <span class="str">"mcpId"</span>:   <span class="str">"tmdb"</span>           <span class="cm">// "tmdb", "census", or "news"</span>
 }
 
 <span class="cm">// Response</span>
