@@ -677,6 +677,9 @@
       <button class="nav-item" data-page="chat">
         <span class="nav-icon">✦</span> Chat with Claude
       </button>
+      <button class="nav-item" data-page="ollama">
+        <span class="nav-icon">⬢</span> Chat with Ollama
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -779,6 +782,58 @@
       </div>
     </div>
 
+
+    <!-- Ollama page -->
+    <div class="page" id="page-ollama">
+      <div class="chat-topbar">
+        <span class="chat-topbar-title">Chat with Ollama</span>
+      </div>
+
+      <div class="tab-bar-wrap">
+        <div class="tab-bar" id="ollamaTabBar">
+          <button class="new-tab-btn" id="ollamaNewTabBtn" title="New conversation">+</button>
+        </div>
+      </div>
+
+      <div class="chat-body" id="ollamaChatBody">
+        <!-- ollama panes injected here by JS -->
+
+        <div class="input-area">
+          <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <label for="ollamaMcp" style="font-size:12px; color: var(--text-muted);">MCP</label>
+            <select id="ollamaMcp" style="
+              background: var(--surface);
+              color: var(--text);
+              border: 1px solid var(--border);
+              border-radius: 8px;
+              padding: 8px 10px;
+              font-size: 13px;
+            ">
+              <option value="">None (plain chat)</option>
+            </select>
+            <label for="ollamaModel" style="font-size:12px; color: var(--text-muted); margin-left:8px;">Model</label>
+            <select id="ollamaModel" style="
+              background: var(--surface);
+              color: var(--text);
+              border: 1px solid var(--border);
+              border-radius: 8px;
+              padding: 8px 10px;
+              font-size: 13px;
+            ">
+              <option value="qwen2.5">qwen2.5</option>
+              <option value="mistral">mistral</option>
+              <option value="llama3.2">llama3.2</option>
+            </select>
+          </div>
+          <div class="input-row">
+            <textarea class="input-field" id="ollamaInput" placeholder="Message Ollama…" rows="1"></textarea>
+            <button class="send-btn" id="ollamaSend" title="Send">↑</button>
+          </div>
+          <div class="input-hint">Enter to send &nbsp;·&nbsp; Shift+Enter for newline</div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <script>
@@ -842,6 +897,17 @@
 
         if (!mcpSelect.value && data.mcps.length > 0) {
           mcpSelect.value = data.mcps[0].id;
+        }
+
+        // Also populate the Ollama MCP dropdown
+        const ollamaMcpEl = document.getElementById('ollamaMcp');
+        if (ollamaMcpEl) {
+          data.mcps.forEach((mcp) => {
+            const option = document.createElement("option");
+            option.value = mcp.id;
+            option.textContent = mcp.label;
+            ollamaMcpEl.appendChild(option);
+          });
         }
       } catch (err) {
         console.error("Failed to load MCPs:", err);
@@ -1224,6 +1290,250 @@
 
     const firstId = createTab('New Chat');
     switchTab(firstId);
+
+    // ── Ollama tab system ─────────────────────────────────────────────────────
+
+    let ollamaTabs = [];
+    let ollamaActiveTabId = null;
+    let ollamaNextTabId = 1;
+
+    const ollamaChatBody = document.getElementById('ollamaChatBody');
+    const ollamaInputArea = ollamaChatBody.querySelector('.input-area');
+    const ollamaModelSelect = document.getElementById('ollamaModel');
+
+    async function loadOllamaModels() {
+      try {
+        const res = await fetch("/api/ollama/models");
+        const data = await res.json();
+        if (data.models && data.models.length > 0) {
+          ollamaModelSelect.innerHTML = "";
+          data.models.forEach(m => {
+            const opt = document.createElement("option");
+            opt.value = m;
+            opt.textContent = m;
+            ollamaModelSelect.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        console.warn("Could not load Ollama models:", err);
+      }
+    }
+
+    function buildOllamaEmptyState() {
+      const div = document.createElement('div');
+      div.className = 'empty-state';
+      div.innerHTML = '<div class="empty-icon">⬢</div><h3>New Conversation</h3><p>Start a conversation with Ollama. Double-click a tab to rename it.</p>';
+      return div;
+    }
+
+    function createOllamaTab(name) {
+      const id = ollamaNextTabId++;
+      const pane = document.createElement('div');
+      pane.className = 'chat-pane';
+      pane.dataset.tabId = id;
+      pane.appendChild(buildOllamaEmptyState());
+      ollamaChatBody.insertBefore(pane, ollamaInputArea);
+      ollamaTabs.push({ id, name: name || `Chat ${id}`, history: [], pane, loading: false });
+      return id;
+    }
+
+    function getOllamaTab(id) { return ollamaTabs.find(t => t.id === id); }
+
+    function switchOllamaTab(id) {
+      ollamaActiveTabId = id;
+      ollamaTabs.forEach(t => t.pane.classList.toggle('active', t.id === id));
+      renderOllamaTabBar();
+      const tab = getOllamaTab(id);
+      if (tab) tab.pane.scrollTop = tab.pane.scrollHeight;
+    }
+
+    function renameOllamaTab(id) {
+      const tab = getOllamaTab(id);
+      if (!tab) return;
+      const tabEl = document.querySelector(`#ollamaTabBar .tab[data-id="${id}"]`);
+      if (!tabEl) return;
+      const labelEl = tabEl.querySelector('.tab-label');
+      if (!labelEl) return;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'tab-label-input';
+      input.value = tab.name;
+      labelEl.replaceWith(input);
+      input.focus();
+      input.select();
+      function commit() { tab.name = input.value.trim() || tab.name; renderOllamaTabBar(); }
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+        if (e.key === 'Escape') { input.value = tab.name; input.blur(); }
+        e.stopPropagation();
+      });
+      input.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    function closeOllamaTab(id) {
+      if (ollamaTabs.length === 1) return;
+      const idx = ollamaTabs.findIndex(t => t.id === id);
+      const tab = getOllamaTab(id);
+      if (tab) tab.pane.remove();
+      ollamaTabs = ollamaTabs.filter(t => t.id !== id);
+      if (ollamaActiveTabId === id) ollamaActiveTabId = ollamaTabs[Math.min(idx, ollamaTabs.length - 1)].id;
+      renderOllamaTabBar();
+      switchOllamaTab(ollamaActiveTabId);
+    }
+
+    function renderOllamaTabBar() {
+      const bar = document.getElementById('ollamaTabBar');
+      bar.querySelectorAll('.tab').forEach(el => el.remove());
+      const newBtn = document.getElementById('ollamaNewTabBtn');
+      ollamaTabs.forEach(tab => {
+        const el = document.createElement('button');
+        el.className = 'tab' + (tab.id === ollamaActiveTabId ? ' active' : '');
+        el.dataset.id = tab.id;
+        const icon = document.createElement('span');
+        icon.className = 'tab-icon';
+        icon.textContent = '⬢';
+        const label = document.createElement('span');
+        label.className = 'tab-label';
+        label.textContent = tab.name;
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'tab-close' + (ollamaTabs.length === 1 ? ' hidden' : '');
+        closeBtn.textContent = '×';
+        closeBtn.title = 'Close';
+        closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeOllamaTab(tab.id); });
+        el.appendChild(icon);
+        el.appendChild(label);
+        el.appendChild(closeBtn);
+        el.addEventListener('click', () => switchOllamaTab(tab.id));
+        el.addEventListener('dblclick', (e) => { e.stopPropagation(); switchOllamaTab(tab.id); renameOllamaTab(tab.id); });
+        bar.insertBefore(el, newBtn);
+      });
+    }
+
+    function appendOllamaMessage(pane, role, text, meta) {
+      pane.querySelector('.empty-state')?.remove();
+      const wrap = document.createElement('div');
+      wrap.className = 'msg-wrap ' + role;
+      const label = document.createElement('div');
+      label.className = 'msg-label';
+      label.textContent = role === 'user' ? 'You' : 'Ollama';
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.textContent = text;
+      wrap.appendChild(label);
+      wrap.appendChild(bubble);
+      if (meta) {
+        const metaEl = document.createElement('div');
+        metaEl.className = 'msg-label';
+        metaEl.style.marginTop = '4px';
+        metaEl.style.fontSize = '9px';
+        metaEl.style.opacity = '0.8';
+        metaEl.textContent = meta;
+        wrap.appendChild(metaEl);
+      }
+      pane.appendChild(wrap);
+      pane.scrollTop = pane.scrollHeight;
+      return wrap;
+    }
+
+    function addOllamaThinking(pane) {
+      const wrap = document.createElement('div');
+      wrap.className = 'msg-wrap assistant thinking-wrap';
+      const label = document.createElement('div');
+      label.className = 'msg-label';
+      label.textContent = 'Ollama';
+      const ind = document.createElement('div');
+      ind.className = 'thinking';
+      ind.innerHTML = '<span></span><span></span><span></span>';
+      wrap.appendChild(label);
+      wrap.appendChild(ind);
+      pane.appendChild(wrap);
+      pane.scrollTop = pane.scrollHeight;
+      return wrap;
+    }
+
+    async function sendOllamaMessage() {
+      const inputEl = document.getElementById('ollamaInput');
+      const sendBtn = document.getElementById('ollamaSend');
+      const message = inputEl.value.trim();
+      if (!message) return;
+
+      const tab = getOllamaTab(ollamaActiveTabId);
+      if (!tab || tab.loading) return;
+
+      const tabId = tab.id;
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+      sendBtn.disabled = true;
+      tab.loading = true;
+
+      appendOllamaMessage(tab.pane, 'user', message);
+
+      if (tab.history.length === 0) {
+        tab.name = message.length > 22 ? message.slice(0, 22) + '…' : message;
+        renderOllamaTabBar();
+      }
+
+      const historySnapshot = [...tab.history];
+      const thinkingEl = addOllamaThinking(tab.pane);
+      const model = ollamaModelSelect.value;
+      const mcpId = document.getElementById('ollamaMcp').value;
+
+      try {
+        const res = await fetch("/api/ollama", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, history: historySnapshot, model, mcpId: mcpId || undefined })
+        });
+        const data = await res.json();
+        thinkingEl.remove();
+
+        const reply = res.ok ? data.reply : `Error: ${data.error || "Request failed"}`;
+        let meta = '';
+        if (res.ok) {
+          if (data.usedTool && data.selectedMcp) meta = `Used: ${data.selectedMcp.label} · ${data.model}`;
+          else if (data.model) meta = `Model: ${data.model}`;
+        }
+
+        const targetTab = getOllamaTab(tabId);
+        if (targetTab) {
+          appendOllamaMessage(targetTab.pane, 'assistant', reply, meta);
+          if (res.ok) {
+            targetTab.history.push({ role: 'user', content: message });
+            targetTab.history.push({ role: 'assistant', content: reply });
+          }
+        }
+      } catch (e) {
+        thinkingEl.remove();
+        const targetTab = getOllamaTab(tabId);
+        if (targetTab) appendOllamaMessage(targetTab.pane, 'assistant', 'Network error — is Ollama running? Try: ollama serve');
+      } finally {
+        const targetTab = getOllamaTab(tabId);
+        if (targetTab) targetTab.loading = false;
+        if (tabId === ollamaActiveTabId) {
+          sendBtn.disabled = false;
+          inputEl.focus();
+        }
+      }
+    }
+
+    const ollamaInputEl = document.getElementById('ollamaInput');
+    ollamaInputEl.addEventListener('input', () => {
+      ollamaInputEl.style.height = 'auto';
+      ollamaInputEl.style.height = Math.min(ollamaInputEl.scrollHeight, 120) + 'px';
+    });
+    ollamaInputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendOllamaMessage(); }
+    });
+    document.getElementById('ollamaSend').addEventListener('click', sendOllamaMessage);
+    document.getElementById('ollamaNewTabBtn').addEventListener('click', () => {
+      const id = createOllamaTab();
+      switchOllamaTab(id);
+    });
+
+    loadOllamaModels();
+    const ollamaFirstId = createOllamaTab('New Chat');
+    switchOllamaTab(ollamaFirstId);
   </script>
 </body>
 
