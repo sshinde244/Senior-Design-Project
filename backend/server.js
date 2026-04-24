@@ -1,21 +1,63 @@
 require("dotenv").config();
+
 const express = require("express");
 const path = require("path");
 const Anthropic = require("@anthropic-ai/sdk");
 
-const { chatConfig, agentConfig, mcpRegistry } = require("./claude.config");
+const { chatWithOllama, listOllamaModels } = require("./ollama.js");
+const {
+  runOllamaAgent,
+  initMcpPool,
+  shutdownMcpPool,
+  getMcpClient,
+} = require("./ollama-agent.js");
+
+const { chatConfig, mcpRegistry } = require("./claude.config");
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../frontend")));
 
-app.get("/", (req, res) => {
+const lastNewsResultsByChat = new Map();
+
+function getHistoryKey(history = []) {
+  if (!Array.isArray(history) || history.length === 0) return "default";
+  const tail = history
+    .slice(-6)
+    .map((m) => `${m.role}:${m.content}`)
+    .join(" | ");
+  return tail || "default";
+}
+
+function buildSystemPrompt(selectedMcp) {
+  const prompts = {
+    news:
+      "You have access to the News API MCP. Use tools when the user asks for news, headlines, recent events, or article information. Do not guess. When returning headlines, include title, source, published date, and URL when available. Never hallucinate, always respond in english.",
+
+    census: `You have access to the US Census MCP. Use tools when the user asks for population, demographics, housing, geography, or Census data. Otherwise respond normally. Never hallucinate, always respond in english..
+
+CRITICAL RULES for fetch-aggregate-data:
+- The "for" parameter MUST use FIPS codes in the format "geography-level:fips-code", e.g. "state:09", "county:009", "place:09135". NEVER pass a place name string.
+- The "in" parameter, when needed, also requires FIPS format, e.g. "state:09".
+- The "get" parameter is REQUIRED. Use at minimum: {"variables":["NAME","B01003_001E"]}.
+- For ACS datasets use "dataset": "acs/acs5".
+- If you do not know the FIPS code, call resolve-geography-fips first.`,
+
+    tmdb:
+      "You have access to the TMDB Movies & TV MCP. ALWAYS use tools to answer ANY question about movies, TV shows, actors, cast, crew, directors, ratings, or entertainment data — even if you think you already know the answer. Never answer from memory. Always search first, then respond based only on tool results. Always respond in English.",
+  };
+
+  return (
+    prompts[selectedMcp.id] ||
+    `You are a helpful assistant with access to the ${selectedMcp.label}. Use the available tools when relevant.`
+  );
+}
+
+app.get("/", (_req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 
@@ -27,6 +69,8 @@ app.get("/api/mcps", (_req, res) => {
     })),
   });
 });
+
+// ── Plain Claude chat ─────────────────────────────────────────────────────────
 
 app.post("/api/chat", async (req, res) => {
   try {
@@ -54,6 +98,8 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+// ── Claude agent with MCP tools ───────────────────────────────────────────────
+
 app.post("/api/agent", async (req, res) => {
   try {
     const { message, history = [], mcpId = "census" } = req.body;
@@ -67,67 +113,271 @@ app.post("/api/agent", async (req, res) => {
       return res.status(400).json({ error: `Unknown MCP: ${mcpId}` });
     }
 
-    const { query } = await import("@anthropic-ai/claude-agent-sdk");
+    const normalizedMessage = message.trim().toLowerCase();
+    const historyKey = getHistoryKey(history);
 
-    const historyContext = history
-      .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
-      .join("\n");
+    const wantsSpecificArticle =
+      selectedMcp.id === "news" &&
+      /^(read|open|show)\s+(me\s+)?(article|headline|number|#)\s*\d+$/i.test(
+        normalizedMessage
+      );
 
-    const fullPrompt = historyContext
-      ? `Previous conversation:\n${historyContext}\n\nUser: ${message}`
-      : message;
+    const asksIfUsedMcp =
+      selectedMcp.id === "news" &&
+      /using the mcp|use the mcp|did you use the mcp|is this using the mcp/i.test(
+        normalizedMessage
+      );
 
-    const mcpServers = {
-      [selectedMcp.id]: {
-        command: selectedMcp.command,
-        args: selectedMcp.args,
-        env: selectedMcp.env,
-      },
-    };
+    if (selectedMcp.id === "news" && wantsSpecificArticle) {
+      const match = normalizedMessage.match(/(\d+)/);
+      const requestedNumber = match ? parseInt(match[1], 10) : null;
+      const savedArticles = lastNewsResultsByChat.get(historyKey) || [];
 
-    let finalText = "";
-    let lastText = "";
-
-    for await (const msg of query({
-      prompt: fullPrompt,
-      options: {
-        permissionMode: agentConfig.permissionMode,
-        allowDangerouslySkipPermissions: agentConfig.allowDangerouslySkipPermissions,
-        maxTurns: agentConfig.maxTurns,
-        mcpServers,
-        allowedTools: [`mcp__${selectedMcp.id}__*`],
-      },
-    })) {
-      if (msg.type === "assistant") {
-        if (typeof msg.message?.content === "string") {
-          lastText = msg.message.content;
-        } else if (Array.isArray(msg.message?.content)) {
-          const text = msg.message.content
-            .filter((c) => c.type === "text")
-            .map((c) => c.text)
-            .join("\n");
-          if (text) lastText = text;
-        }
+      if (
+        !requestedNumber ||
+        requestedNumber < 1 ||
+        requestedNumber > savedArticles.length
+      ) {
+        return res.json({
+          reply: "I couldn't find that article number in the last headline list.",
+          selectedMcp: { id: selectedMcp.id, label: selectedMcp.label },
+          usedTool: false,
+        });
       }
 
-      if (msg.type === "result" && msg.subtype === "success") {
-        finalText =
-          typeof msg.result === "string"
-            ? msg.result
-            : JSON.stringify(msg.result, null, 2);
-      }
+      const article = savedArticles[requestedNumber - 1];
+      return res.json({
+        reply: [
+          `${requestedNumber}. ${article.title || "Untitled"}`,
+          `Source: ${article.source?.name || article.source || "Unknown source"}`,
+          `Published: ${article.publishedAt || "Unknown date"}`,
+          article.description || "No description available.",
+          article.url ? `URL: ${article.url}` : "",
+        ]
+          .filter(Boolean)
+          .join("\n"),
+        selectedMcp: { id: selectedMcp.id, label: selectedMcp.label },
+        usedTool: false,
+      });
     }
 
-    res.json({
-      reply: finalText || lastText || "No response returned.",
+    const mcp = await getMcpClient(selectedMcp.id, selectedMcp);
+
+    if (!mcp.cachedAnthropicTools) {
+      const { tools: mcpTools } = await mcp.listTools();
+      mcp.cachedAnthropicTools = mcpTools.map((t) => ({
+        name: t.name,
+        description: t.description,
+        input_schema: t.inputSchema || { type: "object", properties: {} },
+      }));
+      console.log(`[agent] Cached ${mcp.cachedAnthropicTools.length} tools for ${selectedMcp.id}`);
+    }
+
+    const messages = [...history, { role: "user", content: message }];
+    let finalText = "";
+    let sawTool = false;
+    let newsToolPayload = null;
+    const MAX_TURNS = 10;
+
+    for (let turn = 0; turn < MAX_TURNS; turn++) {
+      console.log(`[agent] Turn ${turn + 1} (${selectedMcp.id})`);
+
+      const response = await client.messages.create({
+        model: chatConfig.model,
+        max_tokens: 4096,
+        system: buildSystemPrompt(selectedMcp),
+        tools: mcp.cachedAnthropicTools,
+        messages,
+      });
+
+      const textBlocks = response.content.filter((b) => b.type === "text");
+      if (textBlocks.length > 0) {
+        finalText = textBlocks.map((b) => b.text).join("\n");
+      }
+
+      if (response.stop_reason === "end_turn") break;
+
+      const toolUseBlocks = response.content.filter((b) => b.type === "tool_use");
+      if (toolUseBlocks.length === 0) break;
+
+      sawTool = true;
+      messages.push({ role: "assistant", content: response.content });
+
+      const toolResults = await Promise.all(
+        toolUseBlocks.map(async (toolUse) => {
+          console.log(
+            `[agent] Calling: ${toolUse.name}(${JSON.stringify(toolUse.input).slice(0, 120)})`
+          );
+
+          try {
+            const mcpResult = await mcp.callTool(toolUse.name, toolUse.input);
+            const resultText =
+              mcpResult.content?.map((c) => c.text).join("\n") ||
+              JSON.stringify(mcpResult);
+
+            if (selectedMcp.id === "news") {
+              try {
+                const parsed = JSON.parse(resultText);
+                if (parsed?.articles) newsToolPayload = parsed;
+              } catch (_) {}
+            }
+
+            console.log(`[agent] Result: ${resultText.slice(0, 300)}`);
+
+            return {
+              type: "tool_result",
+              tool_use_id: toolUse.id,
+              content: resultText,
+            };
+          } catch (err) {
+            console.error(`[agent] Tool error: ${err.message}`);
+            return {
+              type: "tool_result",
+              tool_use_id: toolUse.id,
+              content: `Tool error: ${err.message}`,
+              is_error: true,
+            };
+          }
+        })
+      );
+
+      messages.push({ role: "user", content: toolResults });
+    }
+
+    if (selectedMcp.id === "news" && asksIfUsedMcp) {
+      return res.json({
+        reply: sawTool ? "Yes — this answer used the News MCP." : "No — the News MCP was not used.",
+        selectedMcp: { id: selectedMcp.id, label: selectedMcp.label },
+        usedTool: sawTool,
+      });
+    }
+
+    if (selectedMcp.id === "news" && newsToolPayload?.articles?.length) {
+      lastNewsResultsByChat.set(historyKey, newsToolPayload.articles.slice(0, 8));
+    }
+
+    return res.json({
+      reply: finalText || "No response returned.",
       selectedMcp: { id: selectedMcp.id, label: selectedMcp.label },
+      usedTool: sawTool,
     });
   } catch (err) {
-    console.error("AGENT ERROR:", err.message);
+    console.error("AGENT ERROR:", err);
     res.status(500).json({ error: "Agent request failed.", details: err.message });
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+// ── Ollama routes ─────────────────────────────────────────────────────────────
+
+app.post("/api/ollama", async (req, res) => {
+  try {
+    const { message, system, model, history = [], mcpId } = req.body;
+
+    if (!message || typeof message !== "string") {
+      return res.status(400).json({ error: "Message is required." });
+    }
+
+    if (mcpId) {
+      const selectedMcp = mcpRegistry[mcpId];
+      if (!selectedMcp) {
+        return res.status(400).json({ error: `Unknown MCP: ${mcpId}` });
+      }
+
+      if (/what tools did you use|which tools did you use|what mcp|can you give me the tools|give me the tools/i.test(message)) {
+        const lastAgentMsg = [...(history || [])]
+          .reverse()
+          .find((m) => m.role === "assistant" && Array.isArray(m._toolsUsed));
+
+        if (lastAgentMsg) {
+          const toolList = lastAgentMsg._toolsUsed.map((t) => `• ${t}`).join("\n");
+          return res.json({
+            reply: `For the previous response I used the **${selectedMcp.label}** with these tools:\n${toolList}`,
+            model: process.env.OLLAMA_TOOL_MODEL || process.env.OLLAMA_MODEL,
+            usedTool: false,
+            selectedMcp: { id: selectedMcp.id, label: selectedMcp.label },
+          });
+        }
+
+        return res.json({
+          reply: `I used the **${selectedMcp.label}**, but I do not have a detailed tool breakdown stored for the previous response.`,
+          model: process.env.OLLAMA_TOOL_MODEL || process.env.OLLAMA_MODEL,
+          usedTool: false,
+          selectedMcp: { id: selectedMcp.id, label: selectedMcp.label },
+        });
+      }
+
+      const result = await runOllamaAgent({
+        message,
+        history,
+        model: process.env.OLLAMA_TOOL_MODEL || model,
+        mcpId,
+        mcpConfig: selectedMcp,
+        systemPrompt:
+          system || buildSystemPrompt(selectedMcp) + " Always respond in English. Never call list-datasets unless the user explicitly asks what datasets exist.",
+      });
+
+      return res.json({
+        reply: result.content,
+        model: result.model,
+        usedTool: result.usedTool,
+        toolsUsed: result.toolsUsed,
+        selectedMcp: { id: selectedMcp.id, label: selectedMcp.label },
+      });
+    }
+
+    const messages = [];
+    if (system) messages.push({ role: "system", content: system });
+    for (const m of history) messages.push({ role: m.role, content: m.content });
+    messages.push({ role: "user", content: message });
+
+    const response = await chatWithOllama(messages, model);
+    res.json({ reply: response.content, model: response.model, usedTool: false });
+  } catch (err) {
+    console.error("OLLAMA ERROR:", err);
+    res.status(500).json({ error: "Ollama request failed.", details: err.message });
+  }
 });
+
+app.get("/api/ollama/models", async (_req, res) => {
+  try {
+    const models = await listOllamaModels();
+    res.json({ models });
+  } catch (err) {
+    res.status(500).json({ error: "Could not fetch Ollama models.", details: err.message });
+  }
+});
+
+// ── Start once ────────────────────────────────────────────────────────────────
+
+let serverStarted = false;
+
+async function startServer() {
+  if (serverStarted) return;
+  serverStarted = true;
+
+  try {
+    await initMcpPool(mcpRegistry);
+  } catch (err) {
+    console.error("MCP pool init error:", err.message);
+  }
+
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}
+
+if (require.main === module) {
+  startServer();
+}
+
+process.on("SIGINT", () => {
+  shutdownMcpPool();
+  process.exit(0);
+});
+
+process.on("SIGTERM", () => {
+  shutdownMcpPool();
+  process.exit(0);
+});
+
+module.exports = { app, startServer };

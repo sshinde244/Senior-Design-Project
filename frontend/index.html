@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Claude Chat</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap%22 rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
   <style>
     :root {
       --bg: #0e0e11;
@@ -22,9 +25,13 @@
       --sidebar-w: 220px;
       --radius: 12px;
     }
- 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--bg);
@@ -33,7 +40,7 @@
       display: flex;
       overflow: hidden;
     }
- 
+
     body::before {
       content: '';
       position: fixed;
@@ -44,8 +51,7 @@
       pointer-events: none;
       z-index: 0;
     }
- 
-    /* ── Sidebar ── */
+
     .sidebar {
       width: var(--sidebar-w);
       flex-shrink: 0;
@@ -57,13 +63,13 @@
       position: relative;
       z-index: 2;
     }
- 
+
     .sidebar-logo {
       padding: 28px 20px 22px;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
- 
+
     .logo-text {
       font-family: 'Playfair Display', serif;
       font-size: 20px;
@@ -71,7 +77,7 @@
       letter-spacing: 0.02em;
       display: block;
     }
- 
+
     .logo-sub {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -81,7 +87,7 @@
       margin-top: 3px;
       display: block;
     }
- 
+
     .sidebar-nav {
       flex: 1;
       padding: 12px 10px;
@@ -90,7 +96,7 @@
       gap: 2px;
       overflow-y: auto;
     }
- 
+
     .nav-section-label {
       font-family: 'DM Mono', monospace;
       font-size: 9px;
@@ -99,7 +105,7 @@
       color: var(--text-muted);
       padding: 10px 10px 5px;
     }
- 
+
     .nav-item {
       display: flex;
       align-items: center;
@@ -117,26 +123,26 @@
       width: 100%;
       text-align: left;
     }
- 
+
     .nav-item:hover {
       color: var(--text);
       background: var(--surface2);
     }
- 
+
     .nav-item.active {
       color: var(--accent);
       background: rgba(200, 169, 110, 0.08);
       border-color: rgba(200, 169, 110, 0.18);
       font-weight: 500;
     }
- 
+
     .nav-icon {
       font-size: 15px;
       width: 18px;
       text-align: center;
       flex-shrink: 0;
     }
- 
+
     .sidebar-footer {
       padding: 14px 20px;
       border-top: 1px solid var(--border);
@@ -145,29 +151,34 @@
       align-items: center;
       gap: 8px;
     }
- 
+
     .status-dot {
-      width: 7px; height: 7px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #4ade80;
       box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
       animation: pulse 2.5s ease-in-out infinite;
       flex-shrink: 0;
     }
- 
+
     .status-label {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
       color: var(--text-muted);
       letter-spacing: 0.1em;
     }
- 
+
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+      0%, 100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
     }
- 
-    /* ── Main ── */
+
     .main {
       flex: 1;
       height: 100vh;
@@ -177,8 +188,7 @@
       z-index: 1;
       overflow: hidden;
     }
- 
-    /* ── Pages ── */
+
     .page {
       display: none;
       flex: 1;
@@ -187,14 +197,23 @@
       overflow: hidden;
       animation: pageIn 0.18s ease;
     }
-    .page.active { display: flex; }
- 
-    @keyframes pageIn {
-      from { opacity: 0; transform: translateX(8px); }
-      to   { opacity: 1; transform: translateX(0); }
+
+    .page.active {
+      display: flex;
     }
- 
-    /* Empty pages */
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateX(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
     .page-empty {
       flex: 1;
       display: flex;
@@ -206,13 +225,13 @@
       text-align: center;
       padding: 48px;
     }
- 
+
     .page-empty-icon {
       font-size: 52px;
       opacity: 0.12;
       line-height: 1;
     }
- 
+
     .page-empty h2 {
       font-family: 'Playfair Display', serif;
       font-size: 28px;
@@ -220,14 +239,14 @@
       opacity: 0.3;
       font-weight: 600;
     }
- 
+
     .page-empty p {
       font-size: 13px;
       line-height: 1.65;
       max-width: 340px;
       opacity: 0.45;
     }
- 
+
     .page-empty-badge {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -240,8 +259,7 @@
       margin-top: 6px;
       opacity: 0.6;
     }
- 
-    /* ── Chat page ── */
+
     .chat-topbar {
       display: flex;
       align-items: center;
@@ -250,21 +268,21 @@
       background: var(--surface);
       flex-shrink: 0;
     }
- 
+
     .chat-topbar-title {
       font-family: 'Playfair Display', serif;
       font-size: 16px;
       color: var(--text);
       opacity: 0.85;
     }
- 
+
     .tab-bar-wrap {
       padding: 10px 22px 10px;
       background: var(--surface);
       flex-shrink: 0;
       border-bottom: 1px solid var(--border);
     }
- 
+
     .tab-bar {
       display: flex;
       gap: 2px;
@@ -275,8 +293,11 @@
       overflow-x: auto;
       scrollbar-width: none;
     }
-    .tab-bar::-webkit-scrollbar { display: none; }
- 
+
+    .tab-bar::-webkit-scrollbar {
+      display: none;
+    }
+
     .tab {
       display: flex;
       align-items: center;
@@ -293,32 +314,49 @@
       user-select: none;
       background: none;
     }
- 
-    .tab:hover { color: var(--text); background: var(--surface); }
+
+    .tab:hover {
+      color: var(--text);
+      background: var(--surface);
+    }
+
     .tab.active {
       color: var(--accent);
       background: rgba(200, 169, 110, 0.08);
       border-color: rgba(200, 169, 110, 0.2);
     }
- 
-    .tab-icon { font-size: 12px; line-height: 1; }
- 
+
+    .tab-icon {
+      font-size: 12px;
+      line-height: 1;
+    }
+
     .tab-close {
-      width: 15px; height: 15px;
+      width: 15px;
+      height: 15px;
       border-radius: 50%;
       border: none;
       background: transparent;
       color: var(--text-muted);
       cursor: pointer;
       font-size: 11px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-left: 1px;
       transition: all 0.13s;
       flex-shrink: 0;
     }
-    .tab-close:hover { background: rgba(255,255,255,0.1); color: var(--text); }
-    .tab-close.hidden { visibility: hidden; }
- 
+
+    .tab-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+    }
+
+    .tab-close.hidden {
+      visibility: hidden;
+    }
+
     .tab-label-input {
       background: transparent;
       border: none;
@@ -331,7 +369,7 @@
       width: 100px;
       padding: 0 2px;
     }
- 
+
     .new-tab-btn {
       padding: 7px 12px;
       border-radius: 8px;
@@ -345,13 +383,13 @@
       transition: all 0.14s;
       margin-left: 2px;
     }
+
     .new-tab-btn:hover {
       color: var(--accent);
       border-color: var(--accent);
       background: rgba(200, 169, 110, 0.05);
     }
- 
-    /* ── Chat body: tabs share one layout, each tab owns its chat container ── */
+
     .chat-body {
       flex: 1;
       display: flex;
@@ -361,8 +399,7 @@
       background: var(--bg);
       position: relative;
     }
- 
-    /* Each tab's scrollable message area, hidden unless active */
+
     .chat-pane {
       flex: 1;
       overflow-y: auto;
@@ -372,12 +409,24 @@
       gap: 16px;
       scroll-behavior: smooth;
     }
-    .chat-pane.active { display: flex; }
- 
-    .chat-pane::-webkit-scrollbar { width: 4px; }
-    .chat-pane::-webkit-scrollbar-track { background: transparent; }
-    .chat-pane::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
- 
+
+    .chat-pane.active {
+      display: flex;
+    }
+
+    .chat-pane::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .chat-pane::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-pane::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
     .empty-state {
       flex: 1;
       display: flex;
@@ -388,33 +437,54 @@
       color: var(--text-muted);
       text-align: center;
     }
- 
-    .empty-icon { font-size: 36px; opacity: 0.22; margin-bottom: 4px; }
- 
+
+    .empty-icon {
+      font-size: 36px;
+      opacity: 0.22;
+      margin-bottom: 4px;
+    }
+
     .empty-state h3 {
       font-family: 'Playfair Display', serif;
       font-size: 18px;
       color: var(--text);
       opacity: 0.4;
     }
- 
-    .empty-state p { font-size: 13px; max-width: 300px; line-height: 1.6; opacity: 0.65; }
- 
+
+    .empty-state p {
+      font-size: 13px;
+      max-width: 300px;
+      line-height: 1.6;
+      opacity: 0.65;
+    }
+
     .msg-wrap {
       display: flex;
       flex-direction: column;
       gap: 4px;
       animation: fadeUp 0.2s ease;
     }
- 
+
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
- 
-    .msg-wrap.user { align-items: flex-end; }
-    .msg-wrap.assistant { align-items: flex-start; }
- 
+
+    .msg-wrap.user {
+      align-items: flex-end;
+    }
+
+    .msg-wrap.assistant {
+      align-items: flex-start;
+    }
+
     .msg-label {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -423,7 +493,7 @@
       color: var(--text-muted);
       padding: 0 4px;
     }
- 
+
     .msg-bubble {
       max-width: 78%;
       padding: 12px 16px;
@@ -433,23 +503,25 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
- 
+
     .msg-wrap.user .msg-bubble {
       background: var(--user-bg);
       border: 1px solid var(--user-border);
       border-bottom-right-radius: 3px;
       color: #d4d0f0;
     }
- 
+
     .msg-wrap.assistant .msg-bubble {
       background: var(--claude-bg);
       border: 1px solid var(--claude-border);
       border-bottom-left-radius: 3px;
       color: #cce8d8;
     }
- 
+
     .thinking {
-      display: flex; align-items: center; gap: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
       padding: 12px 16px;
       background: var(--claude-bg);
       border: 1px solid var(--claude-border);
@@ -457,29 +529,47 @@
       border-bottom-left-radius: 3px;
       width: fit-content;
     }
- 
+
     .thinking span {
-      width: 6px; height: 6px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--accent);
       animation: blink 1.2s ease-in-out infinite;
     }
-    .thinking span:nth-child(2) { animation-delay: 0.2s; }
-    .thinking span:nth-child(3) { animation-delay: 0.4s; }
- 
-    @keyframes blink {
-      0%, 100% { opacity: 0.2; transform: scale(0.8); }
-      50%       { opacity: 1;   transform: scale(1.1); }
+
+    .thinking span:nth-child(2) {
+      animation-delay: 0.2s;
     }
- 
+
+    .thinking span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes blink {
+      0%, 100% {
+        opacity: 0.2;
+        transform: scale(0.8);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
+
     .input-area {
       padding: 14px 0 18px;
       flex-shrink: 0;
       background: var(--bg);
     }
- 
-    .input-row { display: flex; gap: 10px; align-items: flex-end; }
- 
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
     .input-field {
       flex: 1;
       background: var(--surface);
@@ -495,27 +585,43 @@
       min-height: 44px;
       max-height: 120px;
     }
- 
-    .input-field::placeholder { color: var(--text-muted); }
-    .input-field:focus { border-color: rgba(200, 169, 110, 0.4); }
- 
+
+    .input-field::placeholder {
+      color: var(--text-muted);
+    }
+
+    .input-field:focus {
+      border-color: rgba(200, 169, 110, 0.4);
+    }
+
     .send-btn {
-      width: 44px; height: 44px;
+      width: 44px;
+      height: 44px;
       border-radius: 10px;
       background: var(--accent);
       border: none;
       color: #0e0e11;
       cursor: pointer;
       font-size: 18px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
       transition: all 0.15s;
       font-weight: bold;
     }
- 
-    .send-btn:hover:not(:disabled) { background: #dbbe85; transform: scale(1.04); }
-    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
- 
+
+    .send-btn:hover:not(:disabled) {
+      background: #dbbe85;
+      transform: scale(1.04);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .input-hint {
       font-size: 11px;
       color: var(--text-muted);
@@ -524,7 +630,6 @@
       font-family: 'DM Mono', monospace;
     }
 
-    /* ── Shared page layout ── */
     .page-scroll {
       flex: 1;
       overflow-y: auto;
@@ -532,14 +637,22 @@
       scrollbar-width: thin;
       scrollbar-color: var(--border) transparent;
     }
-    .page-scroll::-webkit-scrollbar { width: 4px; }
-    .page-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .page-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .page-scroll::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
 
     .page-header {
       margin-bottom: 36px;
       padding-bottom: 24px;
       border-bottom: 1px solid var(--border);
     }
+
     .page-header-eyebrow {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -549,6 +662,7 @@
       margin-bottom: 10px;
       display: block;
     }
+
     .page-header h1 {
       font-family: 'Playfair Display', serif;
       font-size: 32px;
@@ -556,6 +670,7 @@
       color: var(--text);
       line-height: 1.2;
     }
+
     .page-header p {
       font-size: 14px;
       color: var(--text-muted);
@@ -564,13 +679,13 @@
       max-width: 560px;
     }
 
-    /* ── HOME page ── */
     .home-hero {
       display: flex;
       flex-direction: column;
       gap: 10px;
       margin-bottom: 44px;
     }
+
     .home-hero-badge {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -581,6 +696,7 @@
       align-items: center;
       gap: 8px;
     }
+
     .home-hero-badge::before {
       content: '';
       display: inline-block;
@@ -588,6 +704,7 @@
       height: 1px;
       background: var(--accent);
     }
+
     .home-hero h1 {
       font-family: 'Playfair Display', serif;
       font-size: 42px;
@@ -595,22 +712,26 @@
       color: var(--text);
       line-height: 1.15;
     }
+
     .home-hero h1 em {
       font-style: normal;
       color: var(--accent);
     }
+
     .home-hero-sub {
       font-size: 15px;
       color: var(--text-muted);
       line-height: 1.65;
       max-width: 520px;
     }
+
     .home-cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 14px;
       margin-bottom: 36px;
     }
+
     .home-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -622,25 +743,30 @@
       flex-direction: column;
       gap: 10px;
     }
+
     .home-card:hover {
       border-color: rgba(200,169,110,0.35);
       background: var(--surface2);
       transform: translateY(-2px);
     }
+
     .home-card-icon {
       font-size: 22px;
       line-height: 1;
     }
+
     .home-card h3 {
       font-family: 'Playfair Display', serif;
       font-size: 15px;
       color: var(--text);
     }
+
     .home-card p {
       font-size: 12.5px;
       color: var(--text-muted);
       line-height: 1.55;
     }
+
     .home-card-arrow {
       margin-top: auto;
       font-size: 11px;
@@ -650,7 +776,10 @@
       opacity: 0;
       transition: opacity 0.15s;
     }
-    .home-card:hover .home-card-arrow { opacity: 1; }
+
+    .home-card:hover .home-card-arrow {
+      opacity: 1;
+    }
 
     .home-status {
       display: flex;
@@ -661,6 +790,7 @@
       border-radius: var(--radius);
       padding: 16px 22px;
     }
+
     .home-status-label {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -668,11 +798,13 @@
       text-transform: uppercase;
       color: var(--text-muted);
     }
+
     .home-status-items {
       display: flex;
       gap: 16px;
       flex-wrap: wrap;
     }
+
     .home-status-item {
       display: flex;
       align-items: center;
@@ -680,43 +812,49 @@
       font-size: 12.5px;
       color: var(--text);
     }
+
     .home-status-item .dot {
-      width: 6px; height: 6px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: #4ade80;
       box-shadow: 0 0 6px rgba(74,222,128,0.5);
     }
 
-    /* ── ABOUT page ── */
     .about-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 32px;
       margin-bottom: 36px;
     }
+
     .about-section h2 {
       font-family: 'Playfair Display', serif;
       font-size: 18px;
       color: var(--text);
       margin-bottom: 14px;
     }
+
     .about-section p {
       font-size: 13.5px;
       color: var(--text-muted);
       line-height: 1.75;
       margin-bottom: 12px;
     }
+
     .about-flow {
       display: flex;
       flex-direction: column;
       gap: 0;
     }
+
     .about-flow-step {
       display: flex;
       gap: 16px;
       align-items: flex-start;
       position: relative;
     }
+
     .about-flow-step:not(:last-child)::after {
       content: '';
       position: absolute;
@@ -726,37 +864,46 @@
       width: 1px;
       background: var(--border);
     }
+
     .about-flow-num {
-      width: 30px; height: 30px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       background: var(--surface2);
       border: 1px solid var(--border);
       font-family: 'DM Mono', monospace;
       font-size: 11px;
       color: var(--accent);
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
       z-index: 1;
     }
+
     .about-flow-content {
       padding-bottom: 20px;
     }
+
     .about-flow-content strong {
       display: block;
       font-size: 13px;
       color: var(--text);
       margin-bottom: 3px;
     }
+
     .about-flow-content span {
       font-size: 12px;
       color: var(--text-muted);
     }
+
     .about-tech-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       margin-top: 20px;
     }
+
     .about-tech-tag {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
@@ -767,12 +914,12 @@
       background: var(--surface);
     }
 
-    /* ── MCPs page ── */
     .mcp-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
+
     .mcp-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -782,16 +929,19 @@
       flex-direction: column;
       gap: 16px;
     }
+
     .mcp-card-header {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       gap: 12px;
     }
+
     .mcp-card-icon {
       font-size: 28px;
       line-height: 1;
     }
+
     .mcp-card-live {
       font-family: 'DM Mono', monospace;
       font-size: 9px;
@@ -803,16 +953,19 @@
       border-radius: 20px;
       padding: 3px 10px;
     }
+
     .mcp-card h2 {
       font-family: 'Playfair Display', serif;
       font-size: 20px;
       color: var(--text);
     }
+
     .mcp-card-desc {
       font-size: 13px;
       color: var(--text-muted);
       line-height: 1.65;
     }
+
     .mcp-tools-label {
       font-family: 'DM Mono', monospace;
       font-size: 9px;
@@ -821,17 +974,20 @@
       color: var(--text-muted);
       margin-bottom: 8px;
     }
+
     .mcp-tools-list {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
+
     .mcp-tool-item {
       display: flex;
       align-items: flex-start;
       gap: 10px;
       font-size: 12.5px;
     }
+
     .mcp-tool-name {
       font-family: 'DM Mono', monospace;
       font-size: 11.5px;
@@ -839,10 +995,12 @@
       min-width: 160px;
       flex-shrink: 0;
     }
+
     .mcp-tool-desc {
       color: var(--text-muted);
       line-height: 1.4;
     }
+
     .mcp-try-btn {
       margin-top: auto;
       padding: 10px 18px;
@@ -856,12 +1014,12 @@
       transition: all 0.15s;
       text-align: center;
     }
+
     .mcp-try-btn:hover {
       background: rgba(200,169,110,0.18);
       border-color: rgba(200,169,110,0.45);
     }
 
-    /* ── PRESENTATION page ── */
     .slide-container {
       flex: 1;
       display: flex;
@@ -869,11 +1027,13 @@
       height: 100%;
       overflow: hidden;
     }
+
     .slide-viewport {
       flex: 1;
       overflow: hidden;
       position: relative;
     }
+
     .slide {
       position: absolute;
       inset: 0;
@@ -884,10 +1044,12 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
+
     .slide.active {
       display: flex;
       opacity: 1;
     }
+
     .slide-num {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -896,6 +1058,7 @@
       color: var(--text-muted);
       margin-bottom: 24px;
     }
+
     .slide h2 {
       font-family: 'Playfair Display', serif;
       font-size: 38px;
@@ -903,22 +1066,26 @@
       line-height: 1.2;
       margin-bottom: 20px;
     }
+
     .slide h2 em {
       font-style: normal;
       color: var(--accent);
     }
+
     .slide-body {
       font-size: 15px;
       color: var(--text-muted);
       line-height: 1.75;
       max-width: 600px;
     }
+
     .slide-points {
       display: flex;
       flex-direction: column;
       gap: 12px;
       margin-top: 8px;
     }
+
     .slide-point {
       display: flex;
       align-items: flex-start;
@@ -927,6 +1094,7 @@
       color: var(--text-muted);
       line-height: 1.55;
     }
+
     .slide-point-marker {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
@@ -934,6 +1102,7 @@
       margin-top: 2px;
       flex-shrink: 0;
     }
+
     .slide-nav {
       display: flex;
       align-items: center;
@@ -943,6 +1112,7 @@
       background: var(--surface);
       flex-shrink: 0;
     }
+
     .slide-nav-btn {
       display: flex;
       align-items: center;
@@ -957,39 +1127,51 @@
       font-family: 'DM Sans', sans-serif;
       transition: all 0.15s;
     }
+
     .slide-nav-btn:hover:not(:disabled) {
       color: var(--text);
       border-color: var(--accent);
     }
-    .slide-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .slide-nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
     .slide-dots {
       display: flex;
       gap: 8px;
       align-items: center;
     }
+
     .slide-dot {
-      width: 6px; height: 6px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--border);
       cursor: pointer;
       transition: all 0.2s;
     }
+
     .slide-dot.active {
       background: var(--accent);
       width: 20px;
       border-radius: 3px;
     }
+
     .slide-counter {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
       color: var(--text-muted);
     }
+
     .slide-tag-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 20px;
     }
+
     .slide-tag {
       font-family: 'DM Mono', monospace;
       font-size: 12px;
@@ -1000,13 +1182,13 @@
       background: rgba(200,169,110,0.06);
     }
 
-    /* ── ARCHITECTURE page ── */
     .arch-layout {
       display: grid;
       grid-template-columns: 1fr 340px;
       gap: 28px;
       align-items: start;
     }
+
     .arch-diagram {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -1016,6 +1198,7 @@
       flex-direction: column;
       gap: 0;
     }
+
     .arch-layer {
       display: flex;
       align-items: center;
@@ -1023,6 +1206,7 @@
       cursor: pointer;
       position: relative;
     }
+
     .arch-layer-box {
       flex: 1;
       padding: 14px 20px;
@@ -1034,36 +1218,47 @@
       align-items: center;
       gap: 14px;
     }
+
     .arch-layer.selected .arch-layer-box {
       border-color: var(--accent);
       background: rgba(200,169,110,0.07);
     }
+
     .arch-layer-box:hover {
       border-color: rgba(200,169,110,0.4);
     }
-    .arch-layer-icon { font-size: 18px; flex-shrink: 0; }
+
+    .arch-layer-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
     .arch-layer-name {
       font-size: 13.5px;
       color: var(--text);
       font-weight: 500;
     }
+
     .arch-layer-tech {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
       color: var(--text-muted);
       margin-left: auto;
     }
+
     .arch-connector {
       display: flex;
       align-items: center;
       padding: 2px 0 2px 28px;
       gap: 6px;
     }
+
     .arch-connector-line {
       width: 1px;
       height: 22px;
       background: var(--border);
     }
+
     .arch-connector-label {
       font-family: 'DM Mono', monospace;
       font-size: 9px;
@@ -1071,6 +1266,7 @@
       color: var(--text-muted);
       opacity: 0.6;
     }
+
     .arch-info {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -1079,6 +1275,7 @@
       position: sticky;
       top: 0;
     }
+
     .arch-info-placeholder {
       display: flex;
       flex-direction: column;
@@ -1089,23 +1286,44 @@
       color: var(--text-muted);
       text-align: center;
     }
-    .arch-info-placeholder-icon { font-size: 28px; opacity: 0.2; }
-    .arch-info-placeholder p { font-size: 12.5px; opacity: 0.5; }
-    .arch-info-content { display: none; }
-    .arch-info-content.visible { display: block; }
-    .arch-info-icon { font-size: 26px; margin-bottom: 12px; }
+
+    .arch-info-placeholder-icon {
+      font-size: 28px;
+      opacity: 0.2;
+    }
+
+    .arch-info-placeholder p {
+      font-size: 12.5px;
+      opacity: 0.5;
+    }
+
+    .arch-info-content {
+      display: none;
+    }
+
+    .arch-info-content.visible {
+      display: block;
+    }
+
+    .arch-info-icon {
+      font-size: 26px;
+      margin-bottom: 12px;
+    }
+
     .arch-info h3 {
       font-family: 'Playfair Display', serif;
       font-size: 18px;
       color: var(--text);
       margin-bottom: 10px;
     }
+
     .arch-info p {
       font-size: 13px;
       color: var(--text-muted);
       line-height: 1.7;
       margin-bottom: 14px;
     }
+
     .arch-info-file {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
@@ -1118,7 +1336,6 @@
       margin-bottom: 6px;
     }
 
-    /* ── DOCS page ── */
     .docs-layout {
       display: grid;
       grid-template-columns: 200px 1fr;
@@ -1126,12 +1343,14 @@
       height: 100%;
       overflow: hidden;
     }
+
     .docs-sidebar {
       border-right: 1px solid var(--border);
       padding: 24px 0;
       overflow-y: auto;
       scrollbar-width: thin;
     }
+
     .docs-nav-label {
       font-family: 'DM Mono', monospace;
       font-size: 9px;
@@ -1142,7 +1361,11 @@
       margin-bottom: 6px;
       margin-top: 18px;
     }
-    .docs-nav-label:first-child { margin-top: 0; }
+
+    .docs-nav-label:first-child {
+      margin-top: 0;
+    }
+
     .docs-nav-item {
       display: block;
       padding: 8px 20px;
@@ -1158,42 +1381,59 @@
       border-right: none;
       border-bottom: none;
     }
-    .docs-nav-item:hover { color: var(--text); background: var(--surface2); }
+
+    .docs-nav-item:hover {
+      color: var(--text);
+      background: var(--surface2);
+    }
+
     .docs-nav-item.active {
       color: var(--accent);
       border-left-color: var(--accent);
       background: rgba(200,169,110,0.06);
     }
+
     .docs-content {
       overflow-y: auto;
       padding: 36px 44px;
       scrollbar-width: thin;
     }
-    .docs-section { display: none; }
-    .docs-section.active { display: block; }
+
+    .docs-section {
+      display: none;
+    }
+
+    .docs-section.active {
+      display: block;
+    }
+
     .docs-section h2 {
       font-family: 'Playfair Display', serif;
       font-size: 26px;
       color: var(--text);
       margin-bottom: 16px;
     }
+
     .docs-section h3 {
       font-family: 'Playfair Display', serif;
       font-size: 17px;
       color: var(--text);
       margin: 24px 0 10px;
     }
+
     .docs-section p {
       font-size: 13.5px;
       color: var(--text-muted);
       line-height: 1.75;
       margin-bottom: 14px;
     }
+
     .docs-section ul {
       padding-left: 0;
       list-style: none;
       margin-bottom: 14px;
     }
+
     .docs-section ul li {
       font-size: 13.5px;
       color: var(--text-muted);
@@ -1201,6 +1441,7 @@
       padding: 4px 0 4px 18px;
       position: relative;
     }
+
     .docs-section ul li::before {
       content: '◈';
       position: absolute;
@@ -1209,6 +1450,7 @@
       color: var(--accent);
       top: 7px;
     }
+
     .docs-code {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -1222,15 +1464,27 @@
       overflow-x: auto;
       white-space: pre;
     }
-    .docs-code .kw { color: var(--accent2); }
-    .docs-code .str { color: #a8d8a8; }
-    .docs-code .cm { color: var(--text-muted); font-style: italic; }
+
+    .docs-code .kw {
+      color: var(--accent2);
+    }
+
+    .docs-code .str {
+      color: #a8d8a8;
+    }
+
+    .docs-code .cm {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
     .docs-table {
       width: 100%;
       border-collapse: collapse;
       margin: 12px 0;
       font-size: 13px;
     }
+
     .docs-table th {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -1241,6 +1495,7 @@
       padding: 8px 12px;
       border-bottom: 1px solid var(--border);
     }
+
     .docs-table td {
       padding: 10px 12px;
       border-bottom: 1px solid rgba(42,42,53,0.5);
@@ -1248,11 +1503,13 @@
       vertical-align: top;
       line-height: 1.55;
     }
+
     .docs-table td:first-child {
       font-family: 'DM Mono', monospace;
       font-size: 11.5px;
       color: var(--accent);
     }
+
     .docs-badge {
       display: inline-block;
       font-family: 'DM Mono', monospace;
@@ -1263,1057 +1520,1558 @@
       border-radius: 4px;
       margin-right: 4px;
     }
-    .docs-badge.get { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
-    .docs-badge.post { background: rgba(124,111,224,0.12); color: var(--accent2); border: 1px solid rgba(124,111,224,0.2); }
+
+    .docs-badge.get {
+      background: rgba(74,222,128,0.12);
+      color: #4ade80;
+      border: 1px solid rgba(74,222,128,0.2);
+    }
+
+    .docs-badge.post {
+      background: rgba(124,111,224,0.12);
+      color: var(--accent2);
+      border: 1px solid rgba(124,111,224,0.2);
+    }
   </style>
 </head>
+
 <body>
- 
-<!-- Sidebar -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <span class="logo-text">MCPortal</span>
-    <span class="logo-sub">Claude MCP workspace</span>
-  </div>
- 
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">Pages</div>
-    <button class="nav-item active" data-page="home">
-      <span class="nav-icon">⌂</span> Home
-    </button>
-    <button class="nav-item" data-page="about">
-      <span class="nav-icon">◎</span> About
-    </button>
-    <button class="nav-item" data-page="mcps">
-      <span class="nav-icon">⬡</span> MCPs Available
-    </button>
-    <button class="nav-item" data-page="presentation">
-      <span class="nav-icon">▣</span> Presentation
-    </button>
-    <button class="nav-item" data-page="architecture">
-      <span class="nav-icon">⬗</span> Architecture
-    </button>
-    <button class="nav-item" data-page="docs">
-      <span class="nav-icon">≡</span> Documentation
-    </button>
- 
-    <div class="nav-section-label" style="margin-top:14px;">Chat</div>
-    <button class="nav-item" data-page="chat">
-      <span class="nav-icon">✦</span> Chat with Claude
-    </button>
-  </nav>
- 
-  <div class="sidebar-footer">
-    <div class="status-dot"></div>
-    <span class="status-label">Connected</span>
-  </div>
-</aside>
- 
-<!-- Main content -->
-<main class="main">
- 
-  <!-- HOME page -->
-  <div class="page active" id="page-home">
-    <div class="page-scroll">
-      <div class="home-hero">
-        <div class="home-hero-badge">Claude MCP Workspace</div>
-        <h1>MCPortal:<br><em style="font-size: 0.7em;">Claude powered by MCPs</em></h1>
-        <p class="home-hero-sub">A fullstack workspace where Claude connects to real-world data sources through the Model Context Protocol — ask questions, get real answers.</p>
-      </div>
-
-      <div class="home-cards">
-        <div class="home-card" onclick="showPage('chat')">
-          <div class="home-card-icon">✦</div>
-          <h3>Chat with Claude</h3>
-          <p>Start a conversation. Claude uses MCP tools to answer questions with live data.</p>
-          <div class="home-card-arrow">Open chat →</div>
-        </div>
-        <div class="home-card" onclick="showPage('mcps')">
-          <div class="home-card-icon">⬡</div>
-          <h3>MCPs Available</h3>
-          <p>Explore the connected data sources: US Census statistics and TMDB movies & TV.</p>
-          <div class="home-card-arrow">View MCPs →</div>
-        </div>
-        <div class="home-card" onclick="showPage('architecture')">
-          <div class="home-card-icon">⬗</div>
-          <h3>Architecture</h3>
-          <p>See how the layers fit together — from browser to Claude to external APIs.</p>
-          <div class="home-card-arrow">Explore →</div>
-        </div>
-        <div class="home-card" onclick="showPage('presentation')">
-          <div class="home-card-icon">▣</div>
-          <h3>Presentation</h3>
-          <p>A guided walkthrough of what this project is, how it works, and why it matters.</p>
-          <div class="home-card-arrow">View slides →</div>
-        </div>
-        <div class="home-card" onclick="showPage('about')">
-          <div class="home-card-icon">◎</div>
-          <h3>About</h3>
-          <p>The motivation and concepts behind this project, explained clearly.</p>
-          <div class="home-card-arrow">Learn more →</div>
-        </div>
-        <div class="home-card" onclick="showPage('docs')">
-          <div class="home-card-icon">≡</div>
-          <h3>Documentation</h3>
-          <p>Setup guides, API reference, and instructions for adding new MCP servers.</p>
-          <div class="home-card-arrow">Read docs →</div>
-        </div>
-      </div>
-
-      <div class="home-status">
-        <span class="home-status-label">Live MCPs</span>
-        <div class="home-status-items">
-          <div class="home-status-item"><div class="dot"></div> US Census MCP</div>
-          <div class="home-status-item"><div class="dot"></div> TMDB Movies &amp; TV MCP</div>
-          <div class="home-status-item"><div class="dot"></div> Claude claude-opus-4-5</div>
-        </div>
-      </div>
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text">Claude</span>
+      <span class="logo-sub">MCP workspace</span>
     </div>
-  </div>
 
-  <!-- ABOUT page -->
-  <div class="page" id="page-about">
-    <div class="page-scroll">
-      <div class="page-header">
-        <span class="page-header-eyebrow">About this project</span>
-        <h1>Claude + MCP = MCPortal</h1>
-        <p>This workspace demonstrates how Large Language Models can go beyond conversation by connecting to real-world tools and data through the Model Context Protocol.</p>
-      </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Pages</div>
+      <button class="nav-item active" data-page="home">
+        <span class="nav-icon">⌂</span> Home
+      </button>
+      <button class="nav-item" data-page="about">
+        <span class="nav-icon">◎</span> About
+      </button>
+      <button class="nav-item" data-page="mcps">
+        <span class="nav-icon">⬡</span> MCPs Available
+      </button>
+      <button class="nav-item" data-page="presentation">
+        <span class="nav-icon">▣</span> Presentation
+      </button>
+      <button class="nav-item" data-page="architecture">
+        <span class="nav-icon">⬗</span> Architecture
+      </button>
+      <button class="nav-item" data-page="testing">
+        <span class="nav-icon">⊙</span> Testing
+      </button>
+      <button class="nav-item" data-page="docs">
+        <span class="nav-icon">≡</span> Documentation
+      </button>
 
-      <div class="about-grid">
-        <div class="about-section">
-          <h2>What is this?</h2>
-          <p>This is a fullstack Node.js application that gives Claude the ability to call external data APIs — not by hard-coding responses, but through a protocol that lets Claude discover and use tools dynamically at runtime.</p>
-          <p>When you ask "What's the population of Texas?" or "Who directed Inception?", Claude doesn't guess. It calls the appropriate MCP tool, receives live data, and synthesises a real answer.</p>
-          <p>The result is an AI assistant that is genuinely grounded in current, factual information rather than training-data approximations.</p>
-          <div class="about-tech-tags">
-            <span class="about-tech-tag">Node.js</span>
-            <span class="about-tech-tag">Express</span>
-            <span class="about-tech-tag">Anthropic SDK</span>
-            <span class="about-tech-tag">Claude Agent SDK</span>
-            <span class="about-tech-tag">MCP (stdio)</span>
-            <span class="about-tech-tag">TMDB API</span>
-            <span class="about-tech-tag">US Census API</span>
+      <div class="nav-section-label" style="margin-top:14px;">Chat</div>
+      <button class="nav-item" data-page="chat">
+        <span class="nav-icon">✦</span> Chat with Claude
+      </button>
+      <button class="nav-item" data-page="ollama">
+        <span class="nav-icon">⬢</span> Chat with Ollama
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="status-dot"></div>
+      <span class="status-label">Connected</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page active" id="page-home">
+      <div class="page-scroll">
+        <div class="home-hero">
+          <div class="home-hero-badge">Claude MCP Workspace</div>
+          <h1>Claude:<br><em style="font-size: 0.7em;">Powered by MCPs</em></h1>
+          <p class="home-hero-sub">A fullstack workspace where Claude connects to real-world data sources through the Model Context Protocol and can also sit alongside a local Ollama workflow.</p>
+        </div>
+
+        <div class="home-cards">
+          <div class="home-card" onclick="showPage('chat')">
+            <div class="home-card-icon">✦</div>
+            <h3>Chat with Claude</h3>
+            <p>Start a conversation with Claude using MCP tools for live external data.</p>
+            <div class="home-card-arrow">Open chat →</div>
+          </div>
+          <div class="home-card" onclick="showPage('ollama')">
+            <div class="home-card-icon">⬢</div>
+            <h3>Chat with Ollama</h3>
+            <p>Run local-model conversations, optionally paired with MCP access when available.</p>
+            <div class="home-card-arrow">Open chat →</div>
+          </div>
+          <div class="home-card" onclick="showPage('mcps')">
+            <div class="home-card-icon">⬡</div>
+            <h3>MCPs Available</h3>
+            <p>Explore the connected data sources: Census, TMDB, and News.</p>
+            <div class="home-card-arrow">View MCPs →</div>
+          </div>
+          <div class="home-card" onclick="showPage('architecture')">
+            <div class="home-card-icon">⬗</div>
+            <h3>Architecture</h3>
+            <p>See how the frontend, backend, Claude agent layer, Ollama flow, and MCP servers fit together.</p>
+            <div class="home-card-arrow">Explore →</div>
+          </div>
+          <div class="home-card" onclick="showPage('presentation')">
+            <div class="home-card-icon">▣</div>
+            <h3>Presentation</h3>
+            <p>A guided walkthrough of what this project is, how it works, and why it matters.</p>
+            <div class="home-card-arrow">View slides →</div>
+          </div>
+          <div class="home-card" onclick="showPage('docs')">
+            <div class="home-card-icon">≡</div>
+            <h3>Documentation</h3>
+            <p>Setup guides, API reference, and instructions for adding new MCP servers.</p>
+            <div class="home-card-arrow">Read docs →</div>
           </div>
         </div>
 
-        <div class="about-section">
-          <h2>How a request flows</h2>
-          <div class="about-flow">
-            <div class="about-flow-step">
-              <div class="about-flow-num">1</div>
-              <div class="about-flow-content">
-                <strong>You type a message</strong>
-                <span>The frontend sends your message and conversation history to the Express server via <code style="font-family:monospace;font-size:11px;color:var(--accent)">/api/agent</code>.</span>
-              </div>
-            </div>
-            <div class="about-flow-step">
-              <div class="about-flow-num">2</div>
-              <div class="about-flow-content">
-                <strong>Claude Agent SDK runs</strong>
-                <span>The server invokes Claude with access to the selected MCP. Claude decides which tools (if any) to call.</span>
-              </div>
-            </div>
-            <div class="about-flow-step">
-              <div class="about-flow-num">3</div>
-              <div class="about-flow-content">
-                <strong>MCP subprocess executes</strong>
-                <span>The MCP server (a child process) receives tool calls over stdio and fetches live data from external APIs.</span>
-              </div>
-            </div>
-            <div class="about-flow-step">
-              <div class="about-flow-num">4</div>
-              <div class="about-flow-content">
-                <strong>Claude synthesises the answer</strong>
-                <span>Tool results are returned to Claude, which produces a final natural-language response back to you.</span>
-              </div>
-            </div>
+        <div class="home-status">
+          <span class="home-status-label">Live MCPs</span>
+          <div class="home-status-items">
+            <div class="home-status-item"><div class="dot"></div> US Census MCP</div>
+            <div class="home-status-item"><div class="dot"></div> TMDB Movies &amp; TV MCP</div>
+            <div class="home-status-item"><div class="dot"></div> News MCP</div>
+            <div class="home-status-item"><div class="dot"></div> Ollama Local</div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- MCPs page -->
-  <div class="page" id="page-mcps">
-    <div class="page-scroll">
-      <div class="page-header">
-        <span class="page-header-eyebrow">Connected data sources</span>
-        <h1>MCPs Available</h1>
-        <p>Two MCP servers are registered in this workspace. Select one in the Chat page and Claude will have access to its tools.</p>
-      </div>
-
-      <div class="mcp-grid">
-        <!-- Census MCP -->
-        <div class="mcp-card">
-          <div class="mcp-card-header">
-            <div class="mcp-card-icon">🏛️</div>
-            <span class="mcp-card-live">Live</span>
-          </div>
-          <h2>US Census MCP</h2>
-          <p class="mcp-card-desc">Connects Claude to the United States Census Bureau API, enabling queries about population, demographics, economic indicators, and geographic statistics across states, counties, and cities.</p>
-          <div>
-            <div class="mcp-tools-label">Available tools</div>
-            <div class="mcp-tools-list">
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">get-population</span>
-                <span class="mcp-tool-desc">Population totals for states, counties, or places</span>
-              </div>
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">get-demographics</span>
-                <span class="mcp-tool-desc">Age, race, and household breakdown data</span>
-              </div>
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">get-economic-data</span>
-                <span class="mcp-tool-desc">Income, poverty rates, and employment figures</span>
-              </div>
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">search-geographies</span>
-                <span class="mcp-tool-desc">Find FIPS codes and geographic identifiers</span>
-              </div>
-            </div>
-          </div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:10px 0 4px;">
-            Transport: Docker container · stdio
-          </div>
-          <button class="mcp-try-btn" onclick="document.getElementById('mcpSelect').value='census'; showPage('chat');">
-            Try in Chat →
-          </button>
+    <div class="page" id="page-about">
+      <div class="page-scroll">
+        <div class="page-header">
+          <span class="page-header-eyebrow">About this project</span>
+          <h1>Claude + MCP + Ollama</h1>
+          <p>This workspace demonstrates two AI paths in one interface: hosted Claude with MCP tool access and local Ollama-based chat, both inside the same frontend.</p>
         </div>
 
-        <!-- TMDB MCP -->
-        <div class="mcp-card">
-          <div class="mcp-card-header">
-            <div class="mcp-card-icon">🎬</div>
-            <span class="mcp-card-live">Live</span>
-          </div>
-          <h2>TMDB Movies &amp; TV MCP</h2>
-          <p class="mcp-card-desc">Gives Claude access to The Movie Database — search films and TV shows, look up cast and crew, get trending content, and retrieve detailed metadata like genres, ratings, and box office figures.</p>
-          <div>
-            <div class="mcp-tools-label">Available tools</div>
-            <div class="mcp-tools-list">
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">search-movies</span>
-                <span class="mcp-tool-desc">Search films by title, with ratings and overviews</span>
-              </div>
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">get-movie-details</span>
-                <span class="mcp-tool-desc">Full details: runtime, budget, revenue, genres</span>
-              </div>
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">get-trending-movies</span>
-                <span class="mcp-tool-desc">Top 10 trending films by day or week</span>
-              </div>
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">search-people</span>
-                <span class="mcp-tool-desc">Find actors, directors, and other crew members</span>
-              </div>
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">get-person-details</span>
-                <span class="mcp-tool-desc">Biography, birthdate, and full filmography</span>
-              </div>
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">get-movie-credits</span>
-                <span class="mcp-tool-desc">Full cast and crew for any film</span>
-              </div>
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">search-tv-shows</span>
-                <span class="mcp-tool-desc">Search TV series by title</span>
-              </div>
-              <div class="mcp-tool-item">
-                <span class="mcp-tool-name">get-tv-details</span>
-                <span class="mcp-tool-desc">Seasons, episodes, networks, and status</span>
-              </div>
-            </div>
-          </div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:10px 0 4px;">
-            Transport: Node.js child process · stdio
-          </div>
-          <button class="mcp-try-btn" onclick="document.getElementById('mcpSelect').value='tmdb'; showPage('chat');">
-            Try in Chat →
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PRESENTATION page -->
-  <div class="page" id="page-presentation">
-    <div class="slide-container">
-      <div class="slide-viewport">
-
-        <div class="slide active" id="slide-1">
-          <div class="slide-num">01 / 06 &nbsp;·&nbsp; Introduction</div>
-          <h2>MCPortal</h2>
-          <div class="slide-body">
-            <p>Large Language Models are powerful reasoning engines — but they're frozen in time, limited to their training data. What if Claude could reach out and <em style="color:var(--accent);font-style:normal">look things up</em>?</p>
-            <p style="margin-top:14px;">This project answers that question with a working fullstack application: a chat interface where Claude uses live, external data sources to give you real answers.</p>
-          </div>
-        </div>
-
-        <div class="slide" id="slide-2">
-          <div class="slide-num">02 / 06 &nbsp;·&nbsp; The Problem</div>
-          <h2>Why tools <em>matter.</em></h2>
-          <div class="slide-body">
-            <div class="slide-points">
-              <div class="slide-point">
-                <span class="slide-point-marker">01</span>
-                <span>LLMs hallucinate specific figures — populations, box-office revenues, cast lists — because they approximate from training data.</span>
-              </div>
-              <div class="slide-point">
-                <span class="slide-point-marker">02</span>
-                <span>Training data has a cutoff. Real-world information changes constantly: trending films, census updates, economic indicators.</span>
-              </div>
-              <div class="slide-point">
-                <span class="slide-point-marker">03</span>
-                <span>Users need to trust the answers they get. Grounding AI in authoritative APIs builds that trust.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="slide" id="slide-3">
-          <div class="slide-num">03 / 06 &nbsp;·&nbsp; The Solution</div>
-          <h2>Model Context <em>Protocol.</em></h2>
-          <div class="slide-body">
-            <p>MCP is an open standard that lets Claude discover and call external tools at runtime. Each MCP server exposes a set of typed functions — Claude decides when and how to call them.</p>
-            <div class="slide-points" style="margin-top:16px;">
-              <div class="slide-point">
-                <span class="slide-point-marker">→</span>
-                <span>Claude sees tool definitions (name, description, input schema) and decides autonomously which to invoke.</span>
-              </div>
-              <div class="slide-point">
-                <span class="slide-point-marker">→</span>
-                <span>Tool results are fed back into Claude's context, enabling multi-step reasoning over real data.</span>
-              </div>
-              <div class="slide-point">
-                <span class="slide-point-marker">→</span>
-                <span>Servers communicate over stdio — a simple, secure, process-level boundary.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="slide" id="slide-4">
-          <div class="slide-num">04 / 06 &nbsp;·&nbsp; What's Built</div>
-          <h2>Two MCPs, <em>one workspace.</em></h2>
-          <div class="slide-body">
-            <div class="slide-points">
-              <div class="slide-point">
-                <span class="slide-point-marker">🏛️</span>
-                <span><strong style="color:var(--text)">US Census MCP</strong> — Population, demographics, income, and geographic data straight from the Census Bureau API. Running in Docker.</span>
-              </div>
-              <div class="slide-point">
-                <span class="slide-point-marker">🎬</span>
-                <span><strong style="color:var(--text)">TMDB MCP</strong> — Search movies and TV shows, get cast &amp; crew, trending content, and full film metadata from The Movie Database.</span>
-              </div>
-            </div>
-            <div class="slide-tag-grid">
-              <span class="slide-tag">search-movies</span>
-              <span class="slide-tag">get-trending-movies</span>
-              <span class="slide-tag">get-person-details</span>
-              <span class="slide-tag">get-population</span>
-              <span class="slide-tag">get-demographics</span>
-              <span class="slide-tag">search-tv-shows</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="slide" id="slide-5">
-          <div class="slide-num">05 / 06 &nbsp;·&nbsp; Tech Stack</div>
-          <h2>Built with <em>modern tools.</em></h2>
-          <div class="slide-body">
-            <div class="slide-points">
-              <div class="slide-point">
-                <span class="slide-point-marker">→</span>
-                <span><strong style="color:var(--text)">Frontend</strong> — Vanilla HTML/CSS/JS. No framework overhead. Multi-tab chat with persistent conversation history per tab.</span>
-              </div>
-              <div class="slide-point">
-                <span class="slide-point-marker">→</span>
-                <span><strong style="color:var(--text)">Backend</strong> — Express.js server exposing <code style="font-family:monospace;font-size:12px;color:var(--accent)">/api/chat</code> (direct) and <code style="font-family:monospace;font-size:12px;color:var(--accent)">/api/agent</code> (MCP-powered) endpoints.</span>
-              </div>
-              <div class="slide-point">
-                <span class="slide-point-marker">→</span>
-                <span><strong style="color:var(--text)">AI Layer</strong> — Anthropic SDK for direct chat; Claude Agent SDK for agentic, multi-turn tool use with MCP servers.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="slide" id="slide-6">
-          <div class="slide-num">06 / 06 &nbsp;·&nbsp; Try It</div>
-          <h2>See it <em>in action.</em></h2>
-          <div class="slide-body">
-            <p>Head to the Chat page, select an MCP, and ask something like:</p>
-            <div class="slide-points" style="margin-top:16px;">
-              <div class="slide-point">
-                <span class="slide-point-marker">🏛️</span>
-                <span>"What is the population of California compared to Texas?"</span>
-              </div>
-              <div class="slide-point">
-                <span class="slide-point-marker">🎬</span>
-                <span>"Who directed Interstellar and what other films have they made?"</span>
-              </div>
-              <div class="slide-point">
-                <span class="slide-point-marker">🎬</span>
-                <span>"What are the top trending movies this week?"</span>
-              </div>
-            </div>
-            <div style="margin-top:28px;">
-              <button onclick="showPage('chat')" style="padding:12px 28px;background:var(--accent);border:none;border-radius:8px;color:#0e0e11;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">
-                Open Chat →
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /slide-viewport -->
-
-      <div class="slide-nav">
-        <button class="slide-nav-btn" id="slidePrev" disabled onclick="changeSlide(-1)">← Prev</button>
-        <div style="display:flex;align-items:center;gap:20px;">
-          <div class="slide-dots" id="slideDots"></div>
-          <span class="slide-counter" id="slideCounter">1 / 6</span>
-        </div>
-        <button class="slide-nav-btn" id="slideNext" onclick="changeSlide(1)">Next →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ARCHITECTURE page -->
-  <div class="page" id="page-architecture">
-    <div class="page-scroll">
-      <div class="page-header">
-        <span class="page-header-eyebrow">System design</span>
-        <h1>Architecture</h1>
-        <p>Click any layer to learn more about how it works and what file it lives in.</p>
-      </div>
-
-      <div class="arch-layout">
-        <div class="arch-diagram">
-
-          <div class="arch-layer" onclick="selectLayer('browser')" id="arch-browser">
-            <div class="arch-layer-box">
-              <span class="arch-layer-icon">🌐</span>
-              <span class="arch-layer-name">Browser (Frontend)</span>
-              <span class="arch-layer-tech">index.html</span>
-            </div>
-          </div>
-          <div class="arch-connector"><div class="arch-connector-line"></div><span class="arch-connector-label">HTTP POST /api/agent</span></div>
-
-          <div class="arch-layer" onclick="selectLayer('express')" id="arch-express">
-            <div class="arch-layer-box">
-              <span class="arch-layer-icon">⚙️</span>
-              <span class="arch-layer-name">Express Server</span>
-              <span class="arch-layer-tech">server.js</span>
-            </div>
-          </div>
-          <div class="arch-connector"><div class="arch-connector-line"></div><span class="arch-connector-label">Anthropic SDK · claude-opus-4-5</span></div>
-
-          <div class="arch-layer" onclick="selectLayer('agentsdk')" id="arch-agentsdk">
-            <div class="arch-layer-box">
-              <span class="arch-layer-icon">🧠</span>
-              <span class="arch-layer-name">Claude Agent SDK</span>
-              <span class="arch-layer-tech">@anthropic-ai/claude-agent-sdk</span>
-            </div>
-          </div>
-          <div class="arch-connector"><div class="arch-connector-line"></div><span class="arch-connector-label">stdio · JSON-RPC 2.0</span></div>
-
-          <div class="arch-layer" onclick="selectLayer('mcp')" id="arch-mcp">
-            <div class="arch-layer-box">
-              <span class="arch-layer-icon">⬡</span>
-              <span class="arch-layer-name">MCP Servers</span>
-              <span class="arch-layer-tech">tmdb-mcp.js · Docker</span>
-            </div>
-          </div>
-          <div class="arch-connector"><div class="arch-connector-line"></div><span class="arch-connector-label">HTTPS · REST</span></div>
-
-          <div class="arch-layer" onclick="selectLayer('apis')" id="arch-apis">
-            <div class="arch-layer-box">
-              <span class="arch-layer-icon">☁️</span>
-              <span class="arch-layer-name">External APIs</span>
-              <span class="arch-layer-tech">TMDB · US Census Bureau</span>
+        <div class="about-grid">
+          <div class="about-section">
+            <h2>What is this?</h2>
+            <p>This is a fullstack Node.js application that lets Claude call external data APIs through MCP and also provides a separate local chat workflow through Ollama.</p>
+            <p>The hosted side handles live tool use with agentic MCP flows. The local side gives you direct model access and can optionally share the same MCP menu depending on your backend setup.</p>
+            <p>The result is one workspace for comparing hosted and local AI experiences without switching interfaces.</p>
+            <div class="about-tech-tags">
+              <span class="about-tech-tag">Node.js</span>
+              <span class="about-tech-tag">Express</span>
+              <span class="about-tech-tag">Anthropic SDK</span>
+              <span class="about-tech-tag">Claude Agent SDK</span>
+              <span class="about-tech-tag">MCP (stdio)</span>
+              <span class="about-tech-tag">Ollama</span>
+              <span class="about-tech-tag">TMDB API</span>
+              <span class="about-tech-tag">US Census API</span>
             </div>
           </div>
 
-        </div>
-
-        <div class="arch-info" id="archInfo">
-          <div class="arch-info-placeholder" id="archPlaceholder">
-            <div class="arch-info-placeholder-icon">⬗</div>
-            <p>Click a layer in the diagram to learn about it.</p>
+          <div class="about-section">
+            <h2>How a request flows</h2>
+            <div class="about-flow">
+              <div class="about-flow-step">
+                <div class="about-flow-num">1</div>
+                <div class="about-flow-content">
+                  <strong>You choose a chat mode</strong>
+                  <span>Use Claude for hosted MCP-powered responses or Ollama for local model interaction.</span>
+                </div>
+              </div>
+              <div class="about-flow-step">
+                <div class="about-flow-num">2</div>
+                <div class="about-flow-content">
+                  <strong>The frontend sends your message</strong>
+                  <span>Requests go to the Express backend with conversation history and any selected MCP or model settings.</span>
+                </div>
+              </div>
+              <div class="about-flow-step">
+                <div class="about-flow-num">3</div>
+                <div class="about-flow-content">
+                  <strong>Backend routes the request</strong>
+                  <span>Claude requests can use agentic MCP calls, while Ollama requests go to your local model endpoint.</span>
+                </div>
+              </div>
+              <div class="about-flow-step">
+                <div class="about-flow-num">4</div>
+                <div class="about-flow-content">
+                  <strong>You get a response in the same UI</strong>
+                  <span>Each chat mode keeps its own tab history and interface while sharing the same visual workspace.</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="arch-info-content" id="archContent"></div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- DOCS page -->
-  <div class="page" id="page-docs">
-    <div class="docs-layout">
-      <div class="docs-sidebar">
-        <div class="docs-nav-label">API Reference</div>
-        <button class="docs-nav-item active" onclick="showDoc('endpoints')">Endpoints</button>
-        <button class="docs-nav-item" onclick="showDoc('chat-api')">Chat API</button>
-        <button class="docs-nav-item" onclick="showDoc('agent-api')">Agent API</button>
+    <div class="page" id="page-mcps">
+      <div class="page-scroll">
+        <div class="page-header">
+          <span class="page-header-eyebrow">Connected data sources</span>
+          <h1>MCPs Available</h1>
+          <p>Select an MCP in either chat flow to expose those tools to the assistant path you’re using.</p>
+        </div>
 
-        <div class="docs-nav-label">MCP Guide</div>
-        <button class="docs-nav-item" onclick="showDoc('mcp-config')">MCP Configuration</button>
-        <button class="docs-nav-item" onclick="showDoc('adding-mcp')">Adding a New MCP</button>
+        <div class="mcp-grid">
+          <div class="mcp-card">
+            <div class="mcp-card-header">
+              <div class="mcp-card-icon">🏛️</div>
+              <span class="mcp-card-live">Live</span>
+            </div>
+            <h2>US Census MCP</h2>
+            <p class="mcp-card-desc">Population, demographics, economic indicators, and geographic statistics across states, counties, and cities.</p>
+            <div>
+              <div class="mcp-tools-label">Available tools</div>
+              <div class="mcp-tools-list">
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">get-population</span>
+                  <span class="mcp-tool-desc">Population totals for states, counties, or places</span>
+                </div>
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">get-demographics</span>
+                  <span class="mcp-tool-desc">Age, race, and household breakdown data</span>
+                </div>
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">get-economic-data</span>
+                  <span class="mcp-tool-desc">Income, poverty rates, and employment figures</span>
+                </div>
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">search-geographies</span>
+                  <span class="mcp-tool-desc">Find FIPS codes and geographic identifiers</span>
+                </div>
+              </div>
+            </div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:10px 0 4px;">
+              Transport: Docker container · stdio
+            </div>
+            <button class="mcp-try-btn" onclick="document.getElementById('mcpSelect').value='census'; showPage('chat');">
+              Try in Claude →
+            </button>
+          </div>
+
+          <div class="mcp-card">
+            <div class="mcp-card-header">
+              <div class="mcp-card-icon">🎬</div>
+              <span class="mcp-card-live">Live</span>
+            </div>
+            <h2>TMDB Movies &amp; TV MCP</h2>
+            <p class="mcp-card-desc">Search films and TV shows, look up cast and crew, get trending content, and retrieve detailed metadata.</p>
+            <div>
+              <div class="mcp-tools-label">Available tools</div>
+              <div class="mcp-tools-list">
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">search-movies</span>
+                  <span class="mcp-tool-desc">Search films by title, with ratings and overviews</span>
+                </div>
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">get-movie-details</span>
+                  <span class="mcp-tool-desc">Full details: runtime, budget, revenue, genres</span>
+                </div>
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">get-trending-movies</span>
+                  <span class="mcp-tool-desc">Top 10 trending films by day or week</span>
+                </div>
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">search-people</span>
+                  <span class="mcp-tool-desc">Find actors, directors, and other crew members</span>
+                </div>
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">get-person-details</span>
+                  <span class="mcp-tool-desc">Biography, birthdate, and full filmography</span>
+                </div>
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">get-movie-credits</span>
+                  <span class="mcp-tool-desc">Full cast and crew for any film</span>
+                </div>
+              </div>
+            </div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:10px 0 4px;">
+              Transport: Node.js child process · stdio
+            </div>
+            <button class="mcp-try-btn" onclick="document.getElementById('mcpSelect').value='tmdb'; showPage('chat');">
+              Try in Claude →
+            </button>
+          </div>
+
+          <div class="mcp-card">
+            <div class="mcp-card-header">
+              <div class="mcp-card-icon">📰</div>
+              <span class="mcp-card-live">Live</span>
+            </div>
+            <h2>News MCP</h2>
+            <p class="mcp-card-desc">Breaking headlines, searchable article archives, and publisher listings across categories, languages, and countries.</p>
+            <div>
+              <div class="mcp-tools-label">Available tools</div>
+              <div class="mcp-tools-list">
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">get-top-headlines</span>
+                  <span class="mcp-tool-desc">Breaking headlines filtered by country, category, or keyword</span>
+                </div>
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">search-news</span>
+                  <span class="mcp-tool-desc">Full-text article search with date range, language, and sort order</span>
+                </div>
+                <div class="mcp-tool-item">
+                  <span class="mcp-tool-name">list-news-sources</span>
+                  <span class="mcp-tool-desc">Browse available publishers by category, language, or country</span>
+                </div>
+              </div>
+            </div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:10px 0 4px;">
+              Transport: Node.js child process · stdio
+            </div>
+            <button class="mcp-try-btn" onclick="document.getElementById('mcpSelect').value='news'; showPage('chat');">
+              Try in Claude →
+            </button>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <div class="docs-content">
+    <div class="page" id="page-presentation">
+      <div class="slide-container">
+        <div class="slide-viewport">
+          <div class="slide active" id="slide-1">
+            <div class="slide-num">01 / 06 &nbsp;·&nbsp; Introduction</div>
+            <h2>One workspace, <em>two AI paths.</em></h2>
+            <div class="slide-body">
+              <p>This frontend combines hosted Claude + MCP tool use with a local Ollama experience in one interface.</p>
+              <p style="margin-top:14px;">It lets you compare cloud-assisted, tool-enabled answers against local-model chat without rebuilding the whole app twice.</p>
+            </div>
+          </div>
 
-        <div class="docs-section active" id="doc-endpoints">
-          <h2>Endpoints</h2>
-          <table class="docs-table">
-            <tr><th>Method</th><th>Path</th><th>Description</th></tr>
-            <tr><td><span class="docs-badge get">GET</span> /api/mcps</td><td colspan="1">Returns list of registered MCP servers with id and label</td></tr>
-            <tr><td><span class="docs-badge post">POST</span> /api/chat</td><td colspan="1">Direct Claude conversation, no MCP tools</td></tr>
-            <tr><td><span class="docs-badge post">POST</span> /api/agent</td><td colspan="1">Agentic Claude with a selected MCP server active</td></tr>
-          </table>
+          <div class="slide" id="slide-2">
+            <div class="slide-num">02 / 06 &nbsp;·&nbsp; The Problem</div>
+            <h2>Why this <em>matters.</em></h2>
+            <div class="slide-body">
+              <div class="slide-points">
+                <div class="slide-point">
+                  <span class="slide-point-marker">01</span>
+                  <span>Hosted models are powerful, but local models give control and privacy.</span>
+                </div>
+                <div class="slide-point">
+                  <span class="slide-point-marker">02</span>
+                  <span>Tool access is great, but you may also want a local-only workflow.</span>
+                </div>
+                <div class="slide-point">
+                  <span class="slide-point-marker">03</span>
+                  <span>A shared frontend makes that comparison clean and practical.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide" id="slide-3">
+            <div class="slide-num">03 / 06 &nbsp;·&nbsp; Claude Flow</div>
+            <h2>Claude + <em>MCP.</em></h2>
+            <div class="slide-body">
+              <p>Claude uses the agent route to discover and call MCP tools dynamically. That means live data, multi-step reasoning, and grounded answers.</p>
+            </div>
+          </div>
+
+          <div class="slide" id="slide-4">
+            <div class="slide-num">04 / 06 &nbsp;·&nbsp; Ollama Flow</div>
+            <h2>Ollama + <em>local models.</em></h2>
+            <div class="slide-body">
+              <p>Ollama gives you local model execution with selectable models and its own tabbed chat system. Depending on the backend, it can also receive MCP context.</p>
+            </div>
+          </div>
+
+          <div class="slide" id="slide-5">
+            <div class="slide-num">05 / 06 &nbsp;·&nbsp; Shared UI</div>
+            <h2>Same frontend, <em>different engines.</em></h2>
+            <div class="slide-body">
+              <p>Both experiences use the same design system, sidebar navigation, and conversation structure, so the product feels cohesive instead of bolted together.</p>
+            </div>
+          </div>
+
+          <div class="slide" id="slide-6">
+            <div class="slide-num">06 / 06 &nbsp;·&nbsp; Try It</div>
+            <h2>Switch, test, <em>compare.</em></h2>
+            <div class="slide-body">
+              <p>Use Claude for tool-grounded answers. Use Ollama for local chat. Keep both in one polished interface.</p>
+              <div style="margin-top:28px;">
+                <button onclick="showPage('chat')" style="padding:12px 28px;background:var(--accent);border:none;border-radius:8px;color:#0e0e11;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                  Open Chat →
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="docs-section" id="doc-chat-api">
-          <h2>Chat API</h2>
-          <p>A simple direct conversation with Claude. No tools, no MCP — useful for general Q&amp;A without needing live data.</p>
-          <div class="docs-code"><span class="kw">POST</span> /api/chat
+        <div class="slide-nav">
+          <button class="slide-nav-btn" id="slidePrev" disabled onclick="changeSlide(-1)">← Prev</button>
+          <div style="display:flex;align-items:center;gap:20px;">
+            <div class="slide-dots" id="slideDots"></div>
+            <span class="slide-counter" id="slideCounter">1 / 6</span>
+          </div>
+          <button class="slide-nav-btn" id="slideNext" onclick="changeSlide(1)">Next →</button>
+        </div>
+      </div>
+    </div>
 
-<span class="cm">// Request body</span>
-{
-  <span class="str">"message"</span>: <span class="str">"What is the capital of France?"</span>,
-  <span class="str">"history"</span>: [                   <span class="cm">// optional</span>
-    { <span class="str">"role"</span>: <span class="str">"user"</span>,      <span class="str">"content"</span>: <span class="str">"Hello"</span> },
-    { <span class="str">"role"</span>: <span class="str">"assistant"</span>, <span class="str">"content"</span>: <span class="str">"Hi! How can I help?"</span> }
-  ]
-}
-
-<span class="cm">// Response</span>
-{ <span class="str">"reply"</span>: <span class="str">"The capital of France is Paris."</span> }</div>
+    <div class="page" id="page-architecture">
+      <div class="page-scroll">
+        <div class="page-header">
+          <span class="page-header-eyebrow">System design</span>
+          <h1>Architecture</h1>
+          <p>Click any layer to learn more about how it works and what file it lives in.</p>
         </div>
 
-        <div class="docs-section" id="doc-agent-api">
-          <h2>Agent API</h2>
-          <p>An agentic Claude request where the selected MCP server's tools are available. Claude will call tools as needed and return a synthesised answer.</p>
-          <div class="docs-code"><span class="kw">POST</span> /api/agent
+        <div class="arch-layout">
+          <div class="arch-diagram">
+            <div class="arch-layer" onclick="selectLayer('browser')" id="arch-browser">
+              <div class="arch-layer-box">
+                <span class="arch-layer-icon">🌐</span>
+                <span class="arch-layer-name">Browser (Frontend)</span>
+                <span class="arch-layer-tech">index.html</span>
+              </div>
+            </div>
+            <div class="arch-connector"><div class="arch-connector-line"></div><span class="arch-connector-label">HTTP requests</span></div>
 
-<span class="cm">// Request body</span>
+            <div class="arch-layer" onclick="selectLayer('express')" id="arch-express">
+              <div class="arch-layer-box">
+                <span class="arch-layer-icon">⚙️</span>
+                <span class="arch-layer-name">Express Server</span>
+                <span class="arch-layer-tech">server.js</span>
+              </div>
+            </div>
+            <div class="arch-connector"><div class="arch-connector-line"></div><span class="arch-connector-label">Route split: Claude / Ollama</span></div>
+
+            <div class="arch-layer" onclick="selectLayer('agentsdk')" id="arch-agentsdk">
+              <div class="arch-layer-box">
+                <span class="arch-layer-icon">🧠</span>
+                <span class="arch-layer-name">Claude Agent SDK</span>
+                <span class="arch-layer-tech">@anthropic-ai/claude-agent-sdk</span>
+              </div>
+            </div>
+            <div class="arch-connector"><div class="arch-connector-line"></div><span class="arch-connector-label">stdio · JSON-RPC 2.0</span></div>
+
+            <div class="arch-layer" onclick="selectLayer('mcp')" id="arch-mcp">
+              <div class="arch-layer-box">
+                <span class="arch-layer-icon">⬡</span>
+                <span class="arch-layer-name">MCP Servers</span>
+                <span class="arch-layer-tech">tmdb-mcp.js · Docker</span>
+              </div>
+            </div>
+            <div class="arch-connector"><div class="arch-connector-line"></div><span class="arch-connector-label">Local or external APIs</span></div>
+
+            <div class="arch-layer" onclick="selectLayer('apis')" id="arch-apis">
+              <div class="arch-layer-box">
+                <span class="arch-layer-icon">☁️</span>
+                <span class="arch-layer-name">External APIs / Ollama</span>
+                <span class="arch-layer-tech">TMDB · Census · News · Ollama</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-info" id="archInfo">
+            <div class="arch-info-placeholder" id="archPlaceholder">
+              <div class="arch-info-placeholder-icon">⬗</div>
+              <p>Click a layer in the diagram to learn about it.</p>
+            </div>
+            <div class="arch-info-content" id="archContent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-testing">
+      <div class="page-scroll">
+        <div class="page-header">
+          <span class="page-header-eyebrow"> Results, Evaluation, and Testing</span>
+          <h1>Benchmark Testing</h1>
+          <p>Measuring whether providing LLMs with access to accurate Census data via MCP produces more accurate statistics compared to LLMs without the data.</p>
+        </div>
+
+        <!-- Introduction -->
+        <div style="margin-bottom:40px;">
+          <h2 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin-bottom:20px;">Introduction</h2>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Definition</div>
+              <p style="font-size:13px;color:var(--text-muted);line-height:1.7;">A standardized evaluation that measures and compares the performance of a system, product, or individual against established standards or peers.</p>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Key Aspects</div>
+              <p style="font-size:13px;color:var(--text-muted);line-height:1.7;">Performance metrics, stress testing, scalability, user experience impact.</p>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Our Goal</div>
+              <p style="font-size:13px;color:var(--text-muted);line-height:1.7;">Measure whether providing LLMs with accurate Census data via MCP produces more accurate stats compared to LLMs without the data.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Setup -->
+        <div style="margin-bottom:40px;">
+          <h2 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin-bottom:20px;">Setup</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px;">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;">Baseline — No Census Data</div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">01</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Claude API without Census data</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">02</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Python script</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">03</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Prompt fed to claude-3-haiku, receive response</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">04</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Store responses in spreadsheet</span>
+                </div>
+              </div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--accent);border-radius:var(--radius);padding:26px;">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;">With Census MCP</div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">01</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Claude API with Census data</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">02</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Python script</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">03</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Send request to Node.js backend connected to Census API</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">04</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Receive data</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">05</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Prompt fed to claude-3-haiku with data</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">06</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Receive response</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start;">
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:1px;">07</span>
+                  <span style="font-size:13px;color:var(--text-muted);">Store responses in spreadsheet</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Code -->
+        <div style="margin-bottom:40px;">
+          <h2 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin-bottom:20px;">Code</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Baseline — call_model_baseline()</div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;font-family:'DM Mono',monospace;font-size:11.5px;color:var(--text);line-height:1.75;overflow-x:auto;white-space:pre;"><span style="color:var(--accent2);">def</span> <span style="color:#a8d8a8;">call_model_baseline</span>(prompt: str):
+  system_prompt = (
+    <span style="color:#a8d8a8;">"Answer concisely. Include value(s),
+    geography, year, and a source
+    citation only if certain. "
+    "Do not fabricate sources or
+    statistics."</span>
+  )
+  resp = client.messages.create(
+    model=MODEL_NAME,
+    temperature=TEMPERATURE,
+    max_tokens=MAX_TOKENS,
+    system=system_prompt,
+    messages=[{<span style="color:#a8d8a8;">"role"</span>: <span style="color:#a8d8a8;">"user"</span>,
+               <span style="color:#a8d8a8;">"content"</span>: prompt}],
+  )
+  <span style="color:var(--text-muted);font-style:italic;"># measure latency + return</span>
+  <span style="color:var(--accent2);">return</span> {
+    <span style="color:#a8d8a8;">"text"</span>: text,
+    <span style="color:#a8d8a8;">"latency_ms"</span>: latency_ms,
+    <span style="color:#a8d8a8;">"has_census_data"</span>: <span style="color:var(--accent2);">False</span>,
+    <span style="color:#a8d8a8;">"error"</span>: <span style="color:var(--accent2);">None</span>
+  }</div>
+            </div>
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">With MCP — call_model_with_census_data()</div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;font-family:'DM Mono',monospace;font-size:11.5px;color:var(--text);line-height:1.75;overflow-x:auto;white-space:pre;"><span style="color:var(--accent2);">def</span> <span style="color:#a8d8a8;">call_model_with_census_data</span>(
+    prompt: str, zip_code: str):
+  system_prompt = (
+    <span style="color:#a8d8a8;">"You are provided with
+    authoritative U.S. Census
+    Bureau data. Use this data
+    to answer the question.
+    Always cite the U.S. Census
+    Bureau as your source."</span>
+  )
+  <span style="color:var(--text-muted);font-style:italic;"># Fetch from backend</span>
+  census_data = fetch_census_data(
+    zip_code)
+  formatted = format_census_data(
+    census_data)
+  enhanced_prompt = f<span style="color:#a8d8a8;">"""
+  {prompt}
+  Census Data: {formatted}"""</span>
+  <span style="color:var(--text-muted);font-style:italic;"># call model with enriched prompt</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div style="margin-bottom:40px;">
+          <h2 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin-bottom:8px;">Results</h2>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">Results.csv stores all results from both outcomes. As expected, significant success from MCP access.</p>
+
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+
+            <!-- Chart 1: Response Breakdown -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:18px;">Response Breakdown (n=40)</div>
+              <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+                    <span style="font-size:12px;color:var(--text-muted);">Baseline</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">No Census Data</span>
+                  </div>
+                  <div style="height:32px;border-radius:6px;overflow:hidden;display:flex;">
+                    <div style="width:5%;background:#4ade80;display:flex;align-items:center;justify-content:center;" title="2 Perfect"></div>
+                    <div style="width:47.5%;background:#f59e0b;display:flex;align-items:center;justify-content:center;" title="19 Errors">
+                      <span style="font-size:10px;color:#0e0e11;font-family:'DM Mono',monospace;">19 Errors</span>
+                    </div>
+                    <div style="width:47.5%;background:#ef4444;display:flex;align-items:center;justify-content:center;" title="19 Refused">
+                      <span style="font-size:10px;color:#fff;font-family:'DM Mono',monospace;">19 Refused</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+                    <span style="font-size:12px;color:var(--text-muted);">With Census MCP</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);">Direct API Access</span>
+                  </div>
+                  <div style="height:32px;border-radius:6px;overflow:hidden;display:flex;">
+                    <div style="width:82.5%;background:#4ade80;display:flex;align-items:center;justify-content:center;" title="33 Perfect">
+                      <span style="font-size:10px;color:#0e0e11;font-family:'DM Mono',monospace;">33 Perfect</span>
+                    </div>
+                    <div style="width:12.5%;background:#f59e0b;" title="5 Partial"></div>
+                    <div style="width:5%;background:#ef4444;" title="2 Failed"></div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:2px;background:#4ade80;"></div><span style="font-size:11px;color:var(--text-muted);">Perfect</span></div>
+                <div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:2px;background:#f59e0b;"></div><span style="font-size:11px;color:var(--text-muted);">Errors/Partial</span></div>
+                <div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:2px;background:#ef4444;"></div><span style="font-size:11px;color:var(--text-muted);">Refused/Failed</span></div>
+              </div>
+            </div>
+
+            <!-- Chart 2: Answer Rate -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:18px;">Answer Rate (%)</div>
+              <div style="display:flex;flex-direction:column;gap:16px;">
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                    <span style="font-size:12px;color:var(--text-muted);">Baseline</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);">52.6% (21/40)</span>
+                  </div>
+                  <div style="height:24px;background:var(--surface2);border-radius:5px;overflow:hidden;">
+                    <div style="width:52.6%;height:100%;background:var(--text-muted);border-radius:5px;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                    <span style="font-size:12px;color:var(--accent);">With Census MCP</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);">97.4% (38/40)</span>
+                  </div>
+                  <div style="height:24px;background:var(--surface2);border-radius:5px;overflow:hidden;">
+                    <div style="width:97.4%;height:100%;background:var(--accent);border-radius:5px;"></div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);text-align:center;">
+                <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Improvement: </span>
+                <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);">+44.8 pp</span>
+              </div>
+            </div>
+
+            <!-- Chart 3: Perfect Accuracy -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:18px;">Perfect Accuracy Rate (%)</div>
+              <div style="display:flex;flex-direction:column;gap:16px;">
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                    <span style="font-size:12px;color:var(--text-muted);">Baseline</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);">5.0% (2/40)</span>
+                  </div>
+                  <div style="height:24px;background:var(--surface2);border-radius:5px;overflow:hidden;">
+                    <div style="width:5%;height:100%;background:var(--text-muted);border-radius:5px;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                    <span style="font-size:12px;color:var(--accent);">With Census MCP</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);">82.5% (33/40)</span>
+                  </div>
+                  <div style="height:24px;background:var(--surface2);border-radius:5px;overflow:hidden;">
+                    <div style="width:82.5%;height:100%;background:var(--accent);border-radius:5px;"></div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);text-align:center;">
+                <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Improvement: </span>
+                <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);">+77.5 pp</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page" id="page-docs">
+      <div class="docs-layout">
+        <div class="docs-sidebar">
+          <div class="docs-nav-label">API Reference</div>
+          <button class="docs-nav-item active" onclick="showDoc('endpoints', this)">Endpoints</button>
+          <button class="docs-nav-item" onclick="showDoc('chat-api', this)">Chat API</button>
+          <button class="docs-nav-item" onclick="showDoc('agent-api', this)">Agent API</button>
+          <button class="docs-nav-item" onclick="showDoc('ollama-api', this)">Ollama API</button>
+
+          <div class="docs-nav-label">MCP Guide</div>
+          <button class="docs-nav-item" onclick="showDoc('mcp-config', this)">MCP Configuration</button>
+          <button class="docs-nav-item" onclick="showDoc('adding-mcp', this)">Adding a New MCP</button>
+        </div>
+
+        <div class="docs-content">
+          <div class="docs-section active" id="doc-endpoints">
+            <h2>Endpoints</h2>
+            <table class="docs-table">
+              <tr><th>Method</th><th>Path</th><th>Description</th></tr>
+              <tr><td><span class="docs-badge get">GET</span> /api/mcps</td><td colspan="2">Returns list of registered MCP servers with id and label</td></tr>
+              <tr><td><span class="docs-badge post">POST</span> /api/agent</td><td colspan="2">Claude agent route with selected MCP</td></tr>
+              <tr><td><span class="docs-badge post">POST</span> /api/ollama</td><td colspan="2">Local Ollama chat route with selected model and optional MCP</td></tr>
+              <tr><td><span class="docs-badge get">GET</span> /api/ollama/models</td><td colspan="2">Returns available Ollama models</td></tr>
+            </table>
+          </div>
+
+          <div class="docs-section" id="doc-chat-api">
+            <h2>Chat API</h2>
+            <p>The main hosted flow uses Claude through the agent endpoint rather than a plain no-tool chat in this frontend.</p>
+          </div>
+
+          <div class="docs-section" id="doc-agent-api">
+            <h2>Agent API</h2>
+            <p>Claude requests use the selected MCP server and return a synthesized answer, plus metadata about which MCP was selected.</p>
+            <div class="docs-code"><span class="kw">POST</span> /api/agent
+
 {
   <span class="str">"message"</span>: <span class="str">"What are the top trending movies this week?"</span>,
-  <span class="str">"history"</span>: [],              <span class="cm">// optional conversation history</span>
-  <span class="str">"mcpId"</span>:   <span class="str">"tmdb"</span>           <span class="cm">// "tmdb" or "census"</span>
-}
-
-<span class="cm">// Response</span>
-{
-  <span class="str">"reply"</span>: <span class="str">"This week's top trending movies are..."</span>,
-  <span class="str">"selectedMcp"</span>: { <span class="str">"id"</span>: <span class="str">"tmdb"</span>, <span class="str">"label"</span>: <span class="str">"TMDB Movies &amp; TV MCP"</span> }
+  <span class="str">"history"</span>: [],
+  <span class="str">"mcpId"</span>: <span class="str">"tmdb"</span>
 }</div>
-        </div>
+          </div>
 
-        <div class="docs-section" id="doc-mcp-config">
-          <h2>MCP Configuration</h2>
-          <p>All MCP servers are registered in <code style="font-family:monospace;font-size:12px;color:var(--accent)">claude.config.js</code> inside the <code style="font-family:monospace;font-size:12px;color:var(--accent)">mcpRegistry</code> object. Each entry defines how to launch the MCP subprocess:</p>
-          <div class="docs-code"><span class="kw">const</span> mcpRegistry = {
-  tmdb: {
-    id:      <span class="str">"tmdb"</span>,
-    label:   <span class="str">"TMDB Movies &amp; TV MCP"</span>,
-    command: <span class="str">"node"</span>,
-    args:    [path.join(__dirname, <span class="str">"tmdb-mcp.js"</span>)],
-    env:     { ...process.env, TMDB_API_KEY: process.env.TMDB_API_KEY },
-  },
-};</div>
-          <table class="docs-table" style="margin-top:16px;">
-            <tr><th>Field</th><th>Description</th></tr>
-            <tr><td>id</td><td>Unique identifier used in API requests as <code style="font-family:monospace;font-size:11px;color:var(--accent)">mcpId</code></td></tr>
-            <tr><td>label</td><td>Human-readable name shown in the UI dropdown</td></tr>
-            <tr><td>command</td><td>Executable to run (e.g. <code style="font-family:monospace;font-size:11px;color:var(--accent)">node</code>, <code style="font-family:monospace;font-size:11px;color:var(--accent)">docker</code>)</td></tr>
-            <tr><td>args</td><td>Array of arguments passed to the command</td></tr>
-            <tr><td>env</td><td>Environment variables available to the subprocess</td></tr>
-          </table>
-        </div>
+          <div class="docs-section" id="doc-ollama-api">
+            <h2>Ollama API</h2>
+            <p>Ollama requests send the chosen local model, conversation history, and optional MCP selection through a separate local-model route.</p>
+            <div class="docs-code"><span class="kw">POST</span> /api/ollama
 
-        <div class="docs-section" id="doc-adding-mcp">
-          <h2>Adding a New MCP</h2>
-          <p>To add a new MCP server, follow these steps:</p>
-          <h3>1. Create the MCP server file</h3>
-          <p>Write a Node.js script (or any executable) that implements the MCP stdio protocol: handle <code style="font-family:monospace;font-size:12px;color:var(--accent)">initialize</code>, <code style="font-family:monospace;font-size:12px;color:var(--accent)">tools/list</code>, and <code style="font-family:monospace;font-size:12px;color:var(--accent)">tools/call</code> JSON-RPC messages over stdin/stdout.</p>
-          <h3>2. Register it in claude.config.js</h3>
-          <div class="docs-code">mcpRegistry.<span class="str">myNewMcp</span> = {
-  id:      <span class="str">"myNewMcp"</span>,
-  label:   <span class="str">"My New Data Source"</span>,
-  command: <span class="str">"node"</span>,
-  args:    [path.join(__dirname, <span class="str">"my-new-mcp.js"</span>)],
-  env:     { ...process.env, MY_API_KEY: process.env.MY_API_KEY },
-};</div>
-          <h3>3. Restart the server</h3>
-          <p>The new MCP will automatically appear in the dropdown in the Chat page once the server restarts. Claude will have access to all tools it exposes.</p>
-          <ul>
-            <li>Tool names must be unique within an MCP server</li>
-            <li>Input schemas must follow JSON Schema format</li>
-            <li>Always pass API keys via <code style="font-family:monospace;font-size:12px;color:var(--accent)">env</code>, never hardcode them</li>
-            <li>Keep tool descriptions clear — Claude uses them to decide when to call each tool</li>
-          </ul>
-        </div>
+{
+  <span class="str">"message"</span>: <span class="str">"Summarize today's headlines"</span>,
+  <span class="str">"history"</span>: [],
+  <span class="str">"model"</span>: <span class="str">"qwen2.5"</span>,
+  <span class="str">"mcpId"</span>: <span class="str">"news"</span>
+}</div>
+          </div>
 
-      </div><!-- /docs-content -->
-    </div>
-  </div>
- 
-  <!-- Chat page -->
-  <div class="page" id="page-chat">
-    <div class="chat-topbar">
-      <span class="chat-topbar-title">Chat with Claude</span>
-    </div>
- 
-    <div class="tab-bar-wrap">
-      <div class="tab-bar" id="tabBar">
-        <button class="new-tab-btn" id="newTabBtn" title="New conversation">+</button>
+          <div class="docs-section" id="doc-mcp-config">
+            <h2>MCP Configuration</h2>
+            <p>All MCP servers are registered in your backend config and loaded into both dropdowns in the frontend.</p>
+          </div>
+
+          <div class="docs-section" id="doc-adding-mcp">
+            <h2>Adding a New MCP</h2>
+            <p>Add the MCP in the backend registry, restart the server, and it will appear in both the Claude and Ollama selectors when the frontend reloads.</p>
+          </div>
+        </div>
       </div>
     </div>
- 
-    <div class="chat-body" id="chatBody">
-      <!-- chat panes are injected here by JS, one per tab -->
- 
-      <div class="input-area">
-  <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
-    <label for="mcpSelect" style="font-size:12px; color: var(--text-muted);">MCP</label>
-    <select id="mcpSelect" style="
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 13px;
-    "></select>
-  </div>
 
-        <div class="input-row">
-          <textarea class="input-field" id="input" placeholder="Message Claude…" rows="1"></textarea>
-          <button class="send-btn" id="send" title="Send">↑</button>
+    <div class="page" id="page-chat">
+      <div class="chat-topbar">
+        <span class="chat-topbar-title">Chat with Claude</span>
+      </div>
+
+      <div class="tab-bar-wrap">
+        <div class="tab-bar" id="tabBar">
+          <button class="new-tab-btn" id="newTabBtn" title="New conversation">+</button>
         </div>
-        <div class="input-hint">Enter to send &nbsp;·&nbsp; Shift+Enter for newline</div>
+      </div>
+
+      <div class="chat-body" id="chatBody">
+        <div class="input-area">
+          <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
+            <label for="mcpSelect" style="font-size:12px; color: var(--text-muted);">MCP</label>
+            <select id="mcpSelect" style="
+              background: var(--surface);
+              color: var(--text);
+              border: 1px solid var(--border);
+              border-radius: 8px;
+              padding: 8px 10px;
+              font-size: 13px;
+            "></select>
+          </div>
+
+          <div class="input-row">
+            <textarea class="input-field" id="input" placeholder="Message Claude…" rows="1"></textarea>
+            <button class="send-btn" id="send" title="Send">↑</button>
+          </div>
+          <div class="input-hint">Enter to send &nbsp;·&nbsp; Shift+Enter for newline</div>
+        </div>
       </div>
     </div>
-  </div>
- 
-</main>
- 
-<script>
-  // ── Sidebar navigation ──
-  const navItems = document.querySelectorAll('.nav-item[data-page]');
-  const pages = document.querySelectorAll('.page');
- 
-  function showPage(pageId) {
-    pages.forEach(p => p.classList.remove('active'));
-    navItems.forEach(n => n.classList.remove('active'));
-    const page = document.getElementById('page-' + pageId);
-    if (page) page.classList.add('active');
-    const nav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
-    if (nav) nav.classList.add('active');
-  }
- 
-  navItems.forEach(item => {
-    item.addEventListener('click', () => showPage(item.dataset.page));
-  });
 
-  // ── Presentation slides ──
-  let currentSlide = 1;
-  const totalSlides = 6;
+    <div class="page" id="page-ollama">
+      <div class="chat-topbar">
+        <span class="chat-topbar-title">Chat with Ollama</span>
+      </div>
 
-  function initSlides() {
-    const dots = document.getElementById('slideDots');
-    for (let i = 1; i <= totalSlides; i++) {
-      const d = document.createElement('div');
-      d.className = 'slide-dot' + (i === 1 ? ' active' : '');
-      d.onclick = () => goToSlide(i);
-      dots.appendChild(d);
+      <div class="tab-bar-wrap">
+        <div class="tab-bar" id="ollamaTabBar">
+          <button class="new-tab-btn" id="ollamaNewTabBtn" title="New conversation">+</button>
+        </div>
+      </div>
+
+      <div class="chat-body" id="ollamaChatBody">
+        <div class="input-area">
+          <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <label for="ollamaMcp" style="font-size:12px; color: var(--text-muted);">MCP</label>
+            <select id="ollamaMcp" style="
+              background: var(--surface);
+              color: var(--text);
+              border: 1px solid var(--border);
+              border-radius: 8px;
+              padding: 8px 10px;
+              font-size: 13px;
+            ">
+              <option value="">None (plain chat)</option>
+            </select>
+
+            <label for="ollamaModel" style="font-size:12px; color: var(--text-muted); margin-left:8px;">Model</label>
+            <select id="ollamaModel" style="
+              background: var(--surface);
+              color: var(--text);
+              border: 1px solid var(--border);
+              border-radius: 8px;
+              padding: 8px 10px;
+              font-size: 13px;
+            ">
+              <option value="qwen2.5">qwen2.5</option>
+              <option value="mistral">mistral</option>
+              <option value="llama3.2">llama3.2</option>
+            </select>
+          </div>
+
+          <div class="input-row">
+            <textarea class="input-field" id="ollamaInput" placeholder="Message Ollama…" rows="1"></textarea>
+            <button class="send-btn" id="ollamaSend" title="Send">↑</button>
+          </div>
+          <div class="input-hint">Enter to send &nbsp;·&nbsp; Shift+Enter for newline</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const navItems = document.querySelectorAll('.nav-item[data-page]');
+    const pages = document.querySelectorAll('.page');
+
+    function showPage(pageId) {
+      pages.forEach(p => p.classList.remove('active'));
+      navItems.forEach(n => n.classList.remove('active'));
+      const page = document.getElementById('page-' + pageId);
+      if (page) page.classList.add('active');
+      const nav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+      if (nav) nav.classList.add('active');
     }
-  }
 
-  function goToSlide(n) {
-    document.getElementById('slide-' + currentSlide).classList.remove('active');
-    document.querySelectorAll('.slide-dot')[currentSlide - 1].classList.remove('active');
-    currentSlide = Math.max(1, Math.min(totalSlides, n));
-    document.getElementById('slide-' + currentSlide).classList.add('active');
-    document.querySelectorAll('.slide-dot')[currentSlide - 1].classList.add('active');
-    document.getElementById('slideCounter').textContent = currentSlide + ' / ' + totalSlides;
-    document.getElementById('slidePrev').disabled = currentSlide === 1;
-    document.getElementById('slideNext').disabled = currentSlide === totalSlides;
-  }
-
-  function changeSlide(dir) { goToSlide(currentSlide + dir); }
-
-  document.addEventListener('keydown', (e) => {
-    if (document.getElementById('page-presentation').classList.contains('active')) {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
-      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
-    }
-  });
-
-  initSlides();
-
-  // ── Architecture panel ──
-  const archData = {
-    browser: {
-      icon: '🌐',
-      title: 'Browser (Frontend)',
-      file: 'index.html',
-      text: 'A single-page HTML/CSS/JS application with no framework. Handles sidebar navigation, multi-tab chat sessions with persistent history, and the MCP selector dropdown. Makes fetch requests to the Express server.'
-    },
-    express: {
-      icon: '⚙️',
-      title: 'Express Server',
-      file: 'server.js',
-      text: 'A Node.js Express server serving the frontend as static files and exposing two JSON API endpoints: /api/chat for direct Claude conversations and /api/agent for MCP-powered agentic responses. Reads MCP configuration from claude.config.js.'
-    },
-    agentsdk: {
-      icon: '🧠',
-      title: 'Claude Agent SDK',
-      file: '@anthropic-ai/claude-agent-sdk',
-      text: 'The Agent SDK orchestrates multi-turn agentic loops. It launches the selected MCP server as a subprocess, passes tool definitions to Claude, executes tool calls when Claude requests them, and feeds results back — iterating until Claude produces a final answer.'
-    },
-    mcp: {
-      icon: '⬡',
-      title: 'MCP Servers',
-      file: 'tmdb-mcp.js · Docker (census)',
-      text: 'Each MCP server is a child process communicating via stdin/stdout using the JSON-RPC 2.0-based MCP protocol. The TMDB MCP is a Node.js script; the Census MCP runs inside Docker. Both implement initialize, tools/list, and tools/call message handlers.'
-    },
-    apis: {
-      icon: '☁️',
-      title: 'External APIs',
-      file: 'api.themoviedb.org · api.census.gov',
-      text: 'The final data layer. TMDB provides a REST API for movies, TV shows, and people metadata. The US Census Bureau API provides population, demographic, and economic data. Both require API keys passed via environment variables.'
-    }
-  };
-
-  function selectLayer(id) {
-    document.querySelectorAll('.arch-layer').forEach(l => l.classList.remove('selected'));
-    document.getElementById('arch-' + id).classList.add('selected');
-    const d = archData[id];
-    document.getElementById('archPlaceholder').style.display = 'none';
-    const content = document.getElementById('archContent');
-    content.classList.add('visible');
-    content.innerHTML = `
-      <div class="arch-info-icon">${d.icon}</div>
-      <h3>${d.title}</h3>
-      <div class="arch-info-file">${d.file}</div>
-      <p style="margin-top:12px;">${d.text}</p>
-    `;
-  }
-
-  // ── Docs navigation ──
-  function showDoc(id) {
-    document.querySelectorAll('.docs-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.docs-nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('doc-' + id).classList.add('active');
-    event.currentTarget.classList.add('active');
-  }
- 
-  // ── Tab state ──
-  // Each tab owns:
-  //   id        - unique number
-  //   name      - display label
-  //   history   - [{role, content}, ...] sent to the API (kept in sync with actual responses)
-  //   pane      - the DOM element (.chat-pane) that persists for this tab's lifetime
-  //   loading   - boolean, true while a request is in-flight
-  let tabs = [];
-  let activeTabId = null;
-  let nextTabId = 1;
- 
-  const chatBody = document.getElementById('chatBody');
-  const inputArea = chatBody.querySelector('.input-area');
-  const mcpSelect = document.getElementById('mcpSelect');
-
-  async function loadMcps() {
-    try {
-      const res = await fetch("/api/mcps");
-      const data = await res.json();
-
-      mcpSelect.innerHTML = "";
-
-      data.mcps.forEach((mcp) => {
-        const option = document.createElement("option");
-        option.value = mcp.id;
-        option.textContent = mcp.label;
-        mcpSelect.appendChild(option);
-      });
-    } catch (err) {
-      console.error("Failed to load MCPs:", err);
-    }
-  }
- 
-  function createTab(name) {
-    const id = nextTabId++;
- 
-    // Create a dedicated, persistent DOM pane for this tab
-    const pane = document.createElement('div');
-    pane.className = 'chat-pane';
-    pane.dataset.tabId = id;
- 
-    // Show empty state initially
-    pane.appendChild(buildEmptyState());
- 
-    // Insert before the input area so input stays at the bottom
-    chatBody.insertBefore(pane, inputArea);
- 
-    tabs.push({ id, name: name || `Chat ${id}`, history: [], pane, loading: false });
-    return id;
-  }
- 
-  function getTab(id) { return tabs.find(t => t.id === id); }
- 
-  function switchTab(id) {
-    activeTabId = id;
-    // Show/hide panes
-    tabs.forEach(t => t.pane.classList.toggle('active', t.id === id));
-    renderTabBar();
-    // Scroll active pane to bottom
-    const tab = getTab(id);
-    if (tab) tab.pane.scrollTop = tab.pane.scrollHeight;
-  }
- 
-  function renameTab(id) {
-    const tab = getTab(id);
-    if (!tab) return;
-    const tabEl = document.querySelector(`.tab[data-id="${id}"]`);
-    if (!tabEl) return;
-    const labelEl = tabEl.querySelector('.tab-label');
-    if (!labelEl) return;
- 
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'tab-label-input';
-    input.value = tab.name;
-    labelEl.replaceWith(input);
-    input.focus();
-    input.select();
- 
-    function commit() {
-      tab.name = input.value.trim() || tab.name;
-      renderTabBar();
-    }
- 
-    input.addEventListener('blur', commit);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-      if (e.key === 'Escape') { input.value = tab.name; input.blur(); }
-      e.stopPropagation();
+    navItems.forEach(item => {
+      item.addEventListener('click', () => showPage(item.dataset.page));
     });
-    input.addEventListener('click', (e) => e.stopPropagation());
-  }
- 
-  function closeTab(id) {
-    if (tabs.length === 1) return;
-    const idx = tabs.findIndex(t => t.id === id);
-    const tab = getTab(id);
-    if (tab) tab.pane.remove();
-    tabs = tabs.filter(t => t.id !== id);
-    if (activeTabId === id) {
-      activeTabId = tabs[Math.min(idx, tabs.length - 1)].id;
+
+    let currentSlide = 1;
+    const totalSlides = 6;
+
+    function initSlides() {
+      const dots = document.getElementById('slideDots');
+      if (!dots) return;
+      dots.innerHTML = '';
+      for (let i = 1; i <= totalSlides; i++) {
+        const d = document.createElement('div');
+        d.className = 'slide-dot' + (i === 1 ? ' active' : '');
+        d.onclick = () => goToSlide(i);
+        dots.appendChild(d);
+      }
     }
-    renderTabBar();
-    switchTab(activeTabId);
-  }
- 
-  function renderTabBar() {
-    const bar = document.getElementById('tabBar');
-    bar.querySelectorAll('.tab').forEach(el => el.remove());
-    const newBtn = document.getElementById('newTabBtn');
- 
-    tabs.forEach(tab => {
-      const el = document.createElement('button');
-      el.className = 'tab' + (tab.id === activeTabId ? ' active' : '');
-      el.dataset.id = tab.id;
- 
-      const icon = document.createElement('span');
-      icon.className = 'tab-icon';
-      icon.textContent = '◈';
- 
-      const label = document.createElement('span');
-      label.className = 'tab-label';
-      label.textContent = tab.name;
- 
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'tab-close' + (tabs.length === 1 ? ' hidden' : '');
-      closeBtn.textContent = '×';
-      closeBtn.title = 'Close';
-      closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeTab(tab.id); });
- 
-      el.appendChild(icon);
-      el.appendChild(label);
-      el.appendChild(closeBtn);
-      el.addEventListener('click', () => switchTab(tab.id));
-      el.addEventListener('dblclick', (e) => { e.stopPropagation(); switchTab(tab.id); renameTab(tab.id); });
- 
-      bar.insertBefore(el, newBtn);
+
+    function goToSlide(n) {
+      const current = document.getElementById('slide-' + currentSlide);
+      const allDots = document.querySelectorAll('.slide-dot');
+      if (current) current.classList.remove('active');
+      if (allDots[currentSlide - 1]) allDots[currentSlide - 1].classList.remove('active');
+
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+
+      const next = document.getElementById('slide-' + currentSlide);
+      if (next) next.classList.add('active');
+      if (allDots[currentSlide - 1]) allDots[currentSlide - 1].classList.add('active');
+
+      const counter = document.getElementById('slideCounter');
+      const prev = document.getElementById('slidePrev');
+      const nextBtn = document.getElementById('slideNext');
+
+      if (counter) counter.textContent = currentSlide + ' / ' + totalSlides;
+      if (prev) prev.disabled = currentSlide === 1;
+      if (nextBtn) nextBtn.disabled = currentSlide === totalSlides;
+    }
+
+    function changeSlide(dir) {
+      goToSlide(currentSlide + dir);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('page-presentation').classList.contains('active')) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+      }
     });
-  }
- 
-  // ── DOM helpers ──
- 
-  function buildEmptyState() {
-    const div = document.createElement('div');
-    div.className = 'empty-state';
-    div.innerHTML = `
-      <div class="empty-icon">✦</div>
-      <h3>New Conversation</h3>
-      <p>Start a conversation with Claude. Double-click a tab to rename it.</p>
-    `;
-    return div;
-  }
- 
-  function appendMessage(pane, role, text) {
-    // Remove empty state if present
-    pane.querySelector('.empty-state')?.remove();
- 
-    const wrap = document.createElement('div');
-    wrap.className = `msg-wrap ${role}`;
- 
-    const label = document.createElement('div');
-    label.className = 'msg-label';
-    label.textContent = role === 'user' ? 'You' : 'Claude';
- 
-    const bubble = document.createElement('div');
-    bubble.className = 'msg-bubble';
-    bubble.textContent = text;
- 
-    wrap.appendChild(label);
-    wrap.appendChild(bubble);
-    pane.appendChild(wrap);
-    pane.scrollTop = pane.scrollHeight;
-    return wrap;
-  }
- 
-  function addThinkingIndicator(pane) {
-    const wrap = document.createElement('div');
-    wrap.className = 'msg-wrap assistant thinking-wrap';
- 
-    const label = document.createElement('div');
-    label.className = 'msg-label';
-    label.textContent = 'Claude';
- 
-    const ind = document.createElement('div');
-    ind.className = 'thinking';
-    ind.innerHTML = '<span></span><span></span><span></span>';
- 
-    wrap.appendChild(label);
-    wrap.appendChild(ind);
-    pane.appendChild(wrap);
-    pane.scrollTop = pane.scrollHeight;
-    return wrap; // caller holds a reference — no ID needed
-  }
- 
-  // ── Send message ──
- 
-  async function sendMessage() {
-    const inputEl = document.getElementById('input');
-    const sendBtn = document.getElementById('send');
-    const message = inputEl.value.trim();
-    if (!message) return;
- 
-    const tab = getTab(activeTabId);
-    if (!tab) return;
- 
-    // Prevent double-send while this tab is already loading
-    if (tab.loading) return;
- 
-    // Capture which tab this request belongs to (closed over in the async call)
-    const tabId = tab.id;
- 
-    // Update UI immediately
-    inputEl.value = '';
-    inputEl.style.height = 'auto';
-    sendBtn.disabled = true;
-    tab.loading = true;
- 
-    appendMessage(tab.pane, 'user', message);
- 
-    // Auto-name the tab on first message
-    if (tab.history.length === 0) {
-      tab.name = message.length > 22 ? message.slice(0, 22) + '…' : message;
-      renderTabBar();
+
+    initSlides();
+
+    const archData = {
+      browser: {
+        icon: '🌐',
+        title: 'Browser (Frontend)',
+        file: 'index.html',
+        text: 'A single-page HTML/CSS/JS frontend with shared navigation, rich content pages, and two separate tabbed chat systems: one for Claude and one for Ollama.'
+      },
+      express: {
+        icon: '⚙️',
+        title: 'Express Server',
+        file: 'server.js',
+        text: 'The backend serves the frontend and exposes separate routes for Claude agent calls, Ollama local model calls, MCP listing, and available Ollama models.'
+      },
+      agentsdk: {
+        icon: '🧠',
+        title: 'Claude Agent SDK',
+        file: '@anthropic-ai/claude-agent-sdk',
+        text: 'Claude requests use the agent SDK to orchestrate MCP tool calls, loop through tool usage when needed, and return a final answer.'
+      },
+      mcp: {
+        icon: '⬡',
+        title: 'MCP Servers',
+        file: 'tmdb-mcp.js · Docker',
+        text: 'MCP servers expose tool definitions and handle tool calls over stdio using JSON-RPC style messaging.'
+      },
+      apis: {
+        icon: '☁️',
+        title: 'External APIs / Ollama',
+        file: 'TMDB · Census · News · Ollama',
+        text: 'Claude can reach external data sources through MCP. Ollama handles local model inference through its own runtime and model registry.'
+      }
+    };
+
+    function selectLayer(id) {
+      document.querySelectorAll('.arch-layer').forEach(l => l.classList.remove('selected'));
+      const selected = document.getElementById('arch-' + id);
+      if (selected) selected.classList.add('selected');
+
+      const d = archData[id];
+      document.getElementById('archPlaceholder').style.display = 'none';
+      const content = document.getElementById('archContent');
+      content.classList.add('visible');
+      content.innerHTML = `
+        <div class="arch-info-icon">${d.icon}</div>
+        <h3>${d.title}</h3>
+        <div class="arch-info-file">${d.file}</div>
+        <p style="margin-top:12px;">${d.text}</p>
+      `;
     }
- 
-    // Snapshot history *before* the request so retries are safe
-    const historySnapshot = [...tab.history];
- 
-    const thinkingEl = addThinkingIndicator(tab.pane);
- 
-    try {
-      const res = await fetch("/api/agent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message,
-          history: historySnapshot,
-          mcpId: mcpSelect.value
-        })
+
+    function showDoc(id, el) {
+      document.querySelectorAll('.docs-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.docs-nav-item').forEach(n => n.classList.remove('active'));
+      const target = document.getElementById('doc-' + id);
+      if (target) target.classList.add('active');
+      if (el) el.classList.add('active');
+    }
+
+    let tabs = [];
+    let activeTabId = null;
+    let nextTabId = 1;
+
+    const chatBody = document.getElementById('chatBody');
+    const inputArea = chatBody.querySelector('.input-area');
+    const mcpSelect = document.getElementById('mcpSelect');
+
+    async function loadMcps() {
+      try {
+        const res = await fetch("/api/mcps");
+        const data = await res.json();
+
+        mcpSelect.innerHTML = "";
+
+        data.mcps.forEach((mcp) => {
+          const option = document.createElement("option");
+          option.value = mcp.id;
+          option.textContent = mcp.label;
+          mcpSelect.appendChild(option);
+        });
+
+        if (!mcpSelect.value && data.mcps.length > 0) {
+          mcpSelect.value = data.mcps[0].id;
+        }
+
+        const ollamaMcpEl = document.getElementById('ollamaMcp');
+        if (ollamaMcpEl) {
+          data.mcps.forEach((mcp) => {
+            const option = document.createElement("option");
+            option.value = mcp.id;
+            option.textContent = mcp.label;
+            ollamaMcpEl.appendChild(option);
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load MCPs:", err);
+      }
+    }
+
+    function createTab(name) {
+      const id = nextTabId++;
+      const pane = document.createElement('div');
+      pane.className = 'chat-pane';
+      pane.dataset.tabId = id;
+      pane.appendChild(buildEmptyState());
+      chatBody.insertBefore(pane, inputArea);
+      tabs.push({ id, name: name || `Chat ${id}`, history: [], pane, loading: false });
+      return id;
+    }
+
+    function getTab(id) { return tabs.find(t => t.id === id); }
+
+    function switchTab(id) {
+      activeTabId = id;
+      tabs.forEach(t => t.pane.classList.toggle('active', t.id === id));
+      renderTabBar();
+      const tab = getTab(id);
+      if (tab) tab.pane.scrollTop = tab.pane.scrollHeight;
+    }
+
+    function renameTab(id) {
+      const tab = getTab(id);
+      if (!tab) return;
+      const tabEl = document.querySelector(`.tab[data-id="${id}"]`);
+      if (!tabEl) return;
+      const labelEl = tabEl.querySelector('.tab-label');
+      if (!labelEl) return;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'tab-label-input';
+      input.value = tab.name;
+      labelEl.replaceWith(input);
+      input.focus();
+      input.select();
+
+      function commit() {
+        tab.name = input.value.trim() || tab.name;
+        renderTabBar();
+      }
+
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+        if (e.key === 'Escape') { input.value = tab.name; input.blur(); }
+        e.stopPropagation();
       });
- 
-      const data = await res.json();
- 
-      // Always remove the thinking indicator from the tab's own pane
-      thinkingEl.remove();
- 
-      const reply = res.ok
-        ? data.reply
-        : `Error: ${data.error || "Request failed"}`;
- 
-      // Write reply into the tab's pane (even if the user has switched away)
-      const targetTab = getTab(tabId);
-      if (targetTab) {
-        appendMessage(targetTab.pane, 'assistant', reply);
- 
-        // Only advance history on success so the next request has a consistent context
-        if (res.ok) {
-          targetTab.history.push({ role: 'user', content: message });
-          targetTab.history.push({ role: 'assistant', content: reply });
+      input.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    function closeTab(id) {
+      if (tabs.length === 1) return;
+      const idx = tabs.findIndex(t => t.id === id);
+      const tab = getTab(id);
+      if (tab) tab.pane.remove();
+      tabs = tabs.filter(t => t.id !== id);
+      if (activeTabId === id) {
+        activeTabId = tabs[Math.min(idx, tabs.length - 1)].id;
+      }
+      renderTabBar();
+      switchTab(activeTabId);
+    }
+
+    function renderTabBar() {
+      const bar = document.getElementById('tabBar');
+      bar.querySelectorAll('.tab').forEach(el => el.remove());
+      const newBtn = document.getElementById('newTabBtn');
+
+      tabs.forEach(tab => {
+        const el = document.createElement('button');
+        el.className = 'tab' + (tab.id === activeTabId ? ' active' : '');
+        el.dataset.id = tab.id;
+
+        const icon = document.createElement('span');
+        icon.className = 'tab-icon';
+        icon.textContent = '◈';
+
+        const label = document.createElement('span');
+        label.className = 'tab-label';
+        label.textContent = tab.name;
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'tab-close' + (tabs.length === 1 ? ' hidden' : '');
+        closeBtn.textContent = '×';
+        closeBtn.title = 'Close';
+        closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeTab(tab.id); });
+
+        el.appendChild(icon);
+        el.appendChild(label);
+        el.appendChild(closeBtn);
+        el.addEventListener('click', () => switchTab(tab.id));
+        el.addEventListener('dblclick', (e) => { e.stopPropagation(); switchTab(tab.id); renameTab(tab.id); });
+
+        bar.insertBefore(el, newBtn);
+      });
+    }
+
+    function buildEmptyState() {
+      const div = document.createElement('div');
+      div.className = 'empty-state';
+      div.innerHTML = `
+        <div class="empty-icon">✦</div>
+        <h3>New Conversation</h3>
+        <p>Start a conversation with Claude. Double-click a tab to rename it.</p>
+      `;
+      return div;
+    }
+
+    function appendMessage(pane, role, text, meta = "") {
+      pane.querySelector('.empty-state')?.remove();
+
+      const wrap = document.createElement('div');
+      wrap.className = `msg-wrap ${role}`;
+
+      const label = document.createElement('div');
+      label.className = 'msg-label';
+      label.textContent = role === 'user' ? 'You' : 'Claude';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.textContent = text;
+
+      wrap.appendChild(label);
+      wrap.appendChild(bubble);
+
+      if (meta) {
+        const metaEl = document.createElement('div');
+        metaEl.className = 'msg-label';
+        metaEl.style.marginTop = '4px';
+        metaEl.style.fontSize = '9px';
+        metaEl.style.opacity = '0.8';
+        metaEl.textContent = meta;
+        wrap.appendChild(metaEl);
+      }
+
+      pane.appendChild(wrap);
+      pane.scrollTop = pane.scrollHeight;
+      return wrap;
+    }
+
+    function addThinkingIndicator(pane) {
+      const wrap = document.createElement('div');
+      wrap.className = 'msg-wrap assistant thinking-wrap';
+
+      const label = document.createElement('div');
+      label.className = 'msg-label';
+      label.textContent = 'Claude';
+
+      const ind = document.createElement('div');
+      ind.className = 'thinking';
+      ind.innerHTML = '<span></span><span></span><span></span>';
+
+      wrap.appendChild(label);
+      wrap.appendChild(ind);
+      pane.appendChild(wrap);
+      pane.scrollTop = pane.scrollHeight;
+      return wrap;
+    }
+
+    async function sendMessage() {
+      const inputEl = document.getElementById('input');
+      const sendBtn = document.getElementById('send');
+      const message = inputEl.value.trim();
+      if (!message) return;
+
+      const tab = getTab(activeTabId);
+      if (!tab || tab.loading) return;
+
+      const tabId = tab.id;
+
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+      sendBtn.disabled = true;
+      tab.loading = true;
+
+      appendMessage(tab.pane, 'user', message);
+
+      if (tab.history.length === 0) {
+        tab.name = message.length > 22 ? message.slice(0, 22) + '…' : message;
+        renderTabBar();
+      }
+
+      const historySnapshot = [...tab.history];
+      const thinkingEl = addThinkingIndicator(tab.pane);
+
+      try {
+        const res = await fetch("/api/agent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message,
+            history: historySnapshot,
+            mcpId: mcpSelect.value
+          })
+        });
+
+        const data = await res.json();
+        thinkingEl.remove();
+
+        const reply = res.ok
+          ? data.reply
+          : `Error: ${data.error || "Request failed"}`;
+
+        let meta = "";
+        if (res.ok && data.selectedMcp) {
+          meta = data.usedTool
+            ? `Used: ${data.selectedMcp.label}`
+            : `Selected: ${data.selectedMcp.label}`;
+        }
+
+        const targetTab = getTab(tabId);
+        if (targetTab) {
+          appendMessage(targetTab.pane, 'assistant', reply, meta);
+
+          if (res.ok) {
+            targetTab.history.push({ role: 'user', content: message });
+            targetTab.history.push({ role: 'assistant', content: reply });
+          }
+        }
+      } catch (e) {
+        thinkingEl.remove();
+        const targetTab = getTab(tabId);
+        if (targetTab) {
+          appendMessage(targetTab.pane, 'assistant', 'Network error. Check server and try again.');
+        }
+      } finally {
+        const targetTab = getTab(tabId);
+        if (targetTab) targetTab.loading = false;
+
+        if (tabId === activeTabId) {
+          sendBtn.disabled = false;
+          inputEl.focus();
         }
       }
-    } catch (e) {
-      thinkingEl.remove();
- 
-      const targetTab = getTab(tabId);
-      if (targetTab) {
-        appendMessage(targetTab.pane, 'assistant', 'Network error. Check server and try again.');
-        // Do NOT push to history — the exchange was incomplete
-      }
-    } finally {
-      const targetTab = getTab(tabId);
-      if (targetTab) targetTab.loading = false;
- 
-      // Only re-enable the send button if this is still the active tab
-      if (tabId === activeTabId) {
-        sendBtn.disabled = false;
-        inputEl.focus();
+    }
+
+    const inputEl = document.getElementById('input');
+    inputEl.addEventListener('input', () => {
+      inputEl.style.height = 'auto';
+      inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+    });
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+
+    document.getElementById('send').addEventListener('click', sendMessage);
+    document.getElementById('newTabBtn').addEventListener('click', () => {
+      const id = createTab();
+      switchTab(id);
+    });
+
+    loadMcps();
+
+    const firstId = createTab('New Chat');
+    switchTab(firstId);
+
+    let ollamaTabs = [];
+    let ollamaActiveTabId = null;
+    let ollamaNextTabId = 1;
+
+    const ollamaChatBody = document.getElementById('ollamaChatBody');
+    const ollamaInputArea = ollamaChatBody.querySelector('.input-area');
+    const ollamaModelSelect = document.getElementById('ollamaModel');
+
+    async function loadOllamaModels() {
+      try {
+        const res = await fetch("/api/ollama/models");
+        const data = await res.json();
+        if (data.models && data.models.length > 0) {
+          ollamaModelSelect.innerHTML = "";
+          data.models.forEach(m => {
+            const opt = document.createElement("option");
+            opt.value = m.name || m.model || m;
+            opt.textContent = m.name || m.model || m;
+            ollamaModelSelect.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        console.warn("Could not load Ollama models:", err);
       }
     }
-  }
- 
-  // ── Input events ──
- 
-  const inputEl = document.getElementById('input');
-  inputEl.addEventListener('input', () => {
-    inputEl.style.height = 'auto';
-    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
-  });
-  inputEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  });
- 
-  document.getElementById('send').addEventListener('click', sendMessage);
-  document.getElementById('newTabBtn').addEventListener('click', () => {
-    const id = createTab();
-    switchTab(id);
-  });
- 
-  // ── Init ──
-  loadMcps();
 
-  const firstId = createTab('New Chat');
-  switchTab(firstId);
-</script>
+    function buildOllamaEmptyState() {
+      const div = document.createElement('div');
+      div.className = 'empty-state';
+      div.innerHTML = '<div class="empty-icon">⬢</div><h3>New Conversation</h3><p>Start a conversation with Ollama. Double-click a tab to rename it.</p>';
+      return div;
+    }
+
+    function createOllamaTab(name) {
+      const id = ollamaNextTabId++;
+      const pane = document.createElement('div');
+      pane.className = 'chat-pane';
+      pane.dataset.tabId = id;
+      pane.appendChild(buildOllamaEmptyState());
+      ollamaChatBody.insertBefore(pane, ollamaInputArea);
+      ollamaTabs.push({ id, name: name || `Chat ${id}`, history: [], pane, loading: false });
+      return id;
+    }
+
+    function getOllamaTab(id) { return ollamaTabs.find(t => t.id === id); }
+
+    function switchOllamaTab(id) {
+      ollamaActiveTabId = id;
+      ollamaTabs.forEach(t => t.pane.classList.toggle('active', t.id === id));
+      renderOllamaTabBar();
+      const tab = getOllamaTab(id);
+      if (tab) tab.pane.scrollTop = tab.pane.scrollHeight;
+    }
+
+    function renameOllamaTab(id) {
+      const tab = getOllamaTab(id);
+      if (!tab) return;
+      const tabEl = document.querySelector(`#ollamaTabBar .tab[data-id="${id}"]`);
+      if (!tabEl) return;
+      const labelEl = tabEl.querySelector('.tab-label');
+      if (!labelEl) return;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'tab-label-input';
+      input.value = tab.name;
+      labelEl.replaceWith(input);
+      input.focus();
+      input.select();
+
+      function commit() {
+        tab.name = input.value.trim() || tab.name;
+        renderOllamaTabBar();
+      }
+
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+        if (e.key === 'Escape') { input.value = tab.name; input.blur(); }
+        e.stopPropagation();
+      });
+      input.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    function closeOllamaTab(id) {
+      if (ollamaTabs.length === 1) return;
+      const idx = ollamaTabs.findIndex(t => t.id === id);
+      const tab = getOllamaTab(id);
+      if (tab) tab.pane.remove();
+      ollamaTabs = ollamaTabs.filter(t => t.id !== id);
+      if (ollamaActiveTabId === id) ollamaActiveTabId = ollamaTabs[Math.min(idx, ollamaTabs.length - 1)].id;
+      renderOllamaTabBar();
+      switchOllamaTab(ollamaActiveTabId);
+    }
+
+    function renderOllamaTabBar() {
+      const bar = document.getElementById('ollamaTabBar');
+      bar.querySelectorAll('.tab').forEach(el => el.remove());
+      const newBtn = document.getElementById('ollamaNewTabBtn');
+
+      ollamaTabs.forEach(tab => {
+        const el = document.createElement('button');
+        el.className = 'tab' + (tab.id === ollamaActiveTabId ? ' active' : '');
+        el.dataset.id = tab.id;
+
+        const icon = document.createElement('span');
+        icon.className = 'tab-icon';
+        icon.textContent = '⬢';
+
+        const label = document.createElement('span');
+        label.className = 'tab-label';
+        label.textContent = tab.name;
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'tab-close' + (ollamaTabs.length === 1 ? ' hidden' : '');
+        closeBtn.textContent = '×';
+        closeBtn.title = 'Close';
+        closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeOllamaTab(tab.id); });
+
+        el.appendChild(icon);
+        el.appendChild(label);
+        el.appendChild(closeBtn);
+        el.addEventListener('click', () => switchOllamaTab(tab.id));
+        el.addEventListener('dblclick', (e) => { e.stopPropagation(); switchOllamaTab(tab.id); renameOllamaTab(tab.id); });
+
+        bar.insertBefore(el, newBtn);
+      });
+    }
+
+    function appendOllamaMessage(pane, role, text, meta) {
+      pane.querySelector('.empty-state')?.remove();
+      const wrap = document.createElement('div');
+      wrap.className = 'msg-wrap ' + role;
+
+      const label = document.createElement('div');
+      label.className = 'msg-label';
+      label.textContent = role === 'user' ? 'You' : 'Ollama';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.textContent = text;
+
+      wrap.appendChild(label);
+      wrap.appendChild(bubble);
+
+      if (meta) {
+        const metaEl = document.createElement('div');
+        metaEl.className = 'msg-label';
+        metaEl.style.marginTop = '4px';
+        metaEl.style.fontSize = '9px';
+        metaEl.style.opacity = '0.8';
+        metaEl.textContent = meta;
+        wrap.appendChild(metaEl);
+      }
+
+      pane.appendChild(wrap);
+      pane.scrollTop = pane.scrollHeight;
+      return wrap;
+    }
+
+    function addOllamaThinking(pane) {
+      const wrap = document.createElement('div');
+      wrap.className = 'msg-wrap assistant thinking-wrap';
+
+      const label = document.createElement('div');
+      label.className = 'msg-label';
+      label.textContent = 'Ollama';
+
+      const ind = document.createElement('div');
+      ind.className = 'thinking';
+      ind.innerHTML = '<span></span><span></span><span></span>';
+
+      wrap.appendChild(label);
+      wrap.appendChild(ind);
+      pane.appendChild(wrap);
+      pane.scrollTop = pane.scrollHeight;
+      return wrap;
+    }
+
+    async function sendOllamaMessage() {
+      const inputEl = document.getElementById('ollamaInput');
+      const sendBtn = document.getElementById('ollamaSend');
+      const message = inputEl.value.trim();
+      if (!message) return;
+
+      const tab = getOllamaTab(ollamaActiveTabId);
+      if (!tab || tab.loading) return;
+
+      const tabId = tab.id;
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+      sendBtn.disabled = true;
+      tab.loading = true;
+
+      appendOllamaMessage(tab.pane, 'user', message);
+
+      if (tab.history.length === 0) {
+        tab.name = message.length > 22 ? message.slice(0, 22) + '…' : message;
+        renderOllamaTabBar();
+      }
+
+      const historySnapshot = [...tab.history];
+      const thinkingEl = addOllamaThinking(tab.pane);
+      const model = ollamaModelSelect.value;
+      const mcpId = document.getElementById('ollamaMcp').value;
+
+      try {
+        const res = await fetch("/api/ollama", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, history: historySnapshot, model, mcpId: mcpId || undefined })
+        });
+
+        const data = await res.json();
+        thinkingEl.remove();
+
+        const reply = res.ok ? data.reply : `Error: ${data.error || "Request failed"}`;
+        let meta = '';
+        if (res.ok) {
+          if (data.usedTool && data.selectedMcp) meta = `Used: ${data.selectedMcp.label} · ${data.model}`;
+          else if (data.model) meta = `Model: ${data.model}`;
+        }
+
+        const targetTab = getOllamaTab(tabId);
+        if (targetTab) {
+          appendOllamaMessage(targetTab.pane, 'assistant', reply, meta);
+          if (res.ok) {
+            targetTab.history.push({ role: 'user', content: message });
+            const assistantEntry = { role: 'assistant', content: reply };
+            if (data.toolsUsed && data.toolsUsed.length > 0) {
+              assistantEntry._toolsUsed = data.toolsUsed;
+            }
+            targetTab.history.push(assistantEntry);
+          }
+        }
+      } catch (e) {
+        thinkingEl.remove();
+        const targetTab = getOllamaTab(tabId);
+        if (targetTab) appendOllamaMessage(targetTab.pane, 'assistant', 'Network error — is Ollama running? Try: ollama serve');
+      } finally {
+        const targetTab = getOllamaTab(tabId);
+        if (targetTab) targetTab.loading = false;
+        if (tabId === ollamaActiveTabId) {
+          sendBtn.disabled = false;
+          inputEl.focus();
+        }
+      }
+    }
+
+    const ollamaInputEl = document.getElementById('ollamaInput');
+    ollamaInputEl.addEventListener('input', () => {
+      ollamaInputEl.style.height = 'auto';
+      ollamaInputEl.style.height = Math.min(ollamaInputEl.scrollHeight, 120) + 'px';
+    });
+    ollamaInputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendOllamaMessage(); }
+    });
+
+    document.getElementById('ollamaSend').addEventListener('click', sendOllamaMessage);
+    document.getElementById('ollamaNewTabBtn').addEventListener('click', () => {
+      const id = createOllamaTab();
+      switchOllamaTab(id);
+    });
+
+    loadOllamaModels();
+    const ollamaFirstId = createOllamaTab('New Chat');
+    switchOllamaTab(ollamaFirstId);
+  </script>
 </body>
+
 </html>
