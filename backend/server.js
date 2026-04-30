@@ -55,7 +55,7 @@ function buildSystemPrompt(selectedMcp) {
     - Always respond in English.`,
 
     tmdb:
-      "You have access to the TMDB Movies & TV MCP. ALWAYS use tools to answer ANY question about movies, TV shows, actors, cast, crew, directors, ratings, or entertainment data — even if you think you already know the answer. Never answer from memory. Always search first, then respond based only on tool results. Always respond in English.",
+      "You have access to the TMDB Movies & TV MCP. ALWAYS use tools to answer ANY question about movies, TV shows, actors, cast, crew, directors, ratings, or entertainment data — even if you think you already know the answer. Never answer from memory. Always search first, then respond based only on tool results. When searching, use the full official title. If the first result does not match what the user asked for, try a more specific search query or look at additional results. Always verify the result title matches the user's request before responding. Always respond in English.",
   };
 
   return (
@@ -313,9 +313,12 @@ app.post("/api/ollama", async (req, res) => {
         });
       }
 
+      // Only keep the last N conversational turns, not tool results
+      const trimmedHistory = history.slice(-4);
+
       const result = await runOllamaAgent({
         message,
-        history,
+        history: trimmedHistory,
         model: process.env.OLLAMA_TOOL_MODEL || model,
         mcpId,
         mcpConfig: selectedMcp,
