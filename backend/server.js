@@ -38,14 +38,21 @@ function buildSystemPrompt(selectedMcp) {
     news:
       "You have access to the News API MCP. Use tools when the user asks for news, headlines, recent events, or article information. Do not guess. When returning headlines, include title, source, published date, and URL when available. Never hallucinate, always respond in english.",
 
-    census: `You have access to the US Census MCP. Use tools when the user asks for population, demographics, housing, geography, or Census data. Otherwise respond normally. Never hallucinate, always respond in english..
+    census: `You have access to the US Census MCP. Use tools when the user asks for population, demographics, housing, geography, or Census data. Never hallucinate, always respond in english.
 
-CRITICAL RULES for fetch-aggregate-data:
-- The "for" parameter MUST use FIPS codes in the format "geography-level:fips-code", e.g. "state:09", "county:009", "place:09135". NEVER pass a place name string.
-- The "in" parameter, when needed, also requires FIPS format, e.g. "state:09".
-- The "get" parameter is REQUIRED. Use at minimum: {"variables":["NAME","B01003_001E"]}.
-- For ACS datasets use "dataset": "acs/acs5".
-- If you do not know the FIPS code, call resolve-geography-fips first.`,
+    CRITICAL RULES:
+    - If the question mentions a ZIP code, you MUST query it as a ZCTA (ZIP Code Tabulation Area).
+    - To get data for a ZIP code, call fetch-aggregate-data with:
+        "for": "zip code tabulation area:XXXXX"  (5-digit ZIP, zero-padded)
+        DO NOT call resolve-geography-fips for ZIP codes — ZCTAs do not have FIPS codes.
+    - For states, use "for": "state:XX" where XX is the 2-digit FIPS code.
+    - For counties, call resolve-geography-fips first to get the FIPS code, then fetch-aggregate-data.
+    - For cities/places, call resolve-geography-fips first, then fetch-aggregate-data with "for": "place:XXXXX" and "in": "state:XX".
+    - The "get" parameter is REQUIRED. Always include: {"variables":["NAME","B01003_001E"]} at minimum.
+    - For ACS datasets use "dataset": "acs/acs5".
+    - NEVER return state or county level data when the user asked for a ZIP code.
+    - If you cannot find exact data, say so — do not substitute a larger geography.
+    - Always respond in English.`,
 
     tmdb:
       "You have access to the TMDB Movies & TV MCP. ALWAYS use tools to answer ANY question about movies, TV shows, actors, cast, crew, directors, ratings, or entertainment data — even if you think you already know the answer. Never answer from memory. Always search first, then respond based only on tool results. Always respond in English.",

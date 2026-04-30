@@ -2122,21 +2122,22 @@
         <!-- Results -->
         <div style="margin-bottom:40px;">
           <h2 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin-bottom:8px;">Results</h2>
-          <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">Results.csv stores all results from both outcomes. As expected, significant success from MCP access.</p>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">Three-way comparison: baseline Claude (no data), Claude + Census MCP, and Ollama + Census MCP on our website.</p>
 
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
 
             <!-- Chart 1: Response Breakdown -->
             <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
-              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:18px;">Response Breakdown (n=40)</div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:18px;">Response Breakdown (n=39)</div>
               <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+
                 <div>
                   <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
                     <span style="font-size:12px;color:var(--text-muted);">Baseline</span>
                     <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">No Census Data</span>
                   </div>
                   <div style="height:32px;border-radius:6px;overflow:hidden;display:flex;">
-                    <div style="width:5%;background:#4ade80;display:flex;align-items:center;justify-content:center;" title="2 Perfect"></div>
+                    <div style="width:5%;background:#4ade80;" title="2 Perfect"></div>
                     <div style="width:47.5%;background:#f59e0b;display:flex;align-items:center;justify-content:center;" title="19 Errors">
                       <span style="font-size:10px;color:#0e0e11;font-family:'DM Mono',monospace;">19 Errors</span>
                     </div>
@@ -2145,10 +2146,11 @@
                     </div>
                   </div>
                 </div>
+
                 <div>
                   <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-                    <span style="font-size:12px;color:var(--text-muted);">With Census MCP</span>
-                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);">Direct API Access</span>
+                    <span style="font-size:12px;color:var(--text-muted);">Claude + Census MCP</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);">Direct API</span>
                   </div>
                   <div style="height:32px;border-radius:6px;overflow:hidden;display:flex;">
                     <div style="width:82.5%;background:#4ade80;display:flex;align-items:center;justify-content:center;" title="33 Perfect">
@@ -2158,6 +2160,23 @@
                     <div style="width:5%;background:#ef4444;" title="2 Failed"></div>
                   </div>
                 </div>
+
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+                    <span style="font-size:12px;color:var(--text-muted);">Ollama + Census MCP</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent2);">Website</span>
+                  </div>
+                  <div style="height:32px;border-radius:6px;overflow:hidden;display:flex;">
+                    <div style="width:15.4%;background:#4ade80;" title="6 Perfect"></div>
+                    <div style="width:38.5%;background:#f59e0b;display:flex;align-items:center;justify-content:center;" title="15 Partial">
+                      <span style="font-size:10px;color:#0e0e11;font-family:'DM Mono',monospace;">15 Partial</span>
+                    </div>
+                    <div style="width:46.1%;background:#ef4444;display:flex;align-items:center;justify-content:center;" title="18 Failed/No Answer">
+                      <span style="font-size:10px;color:#fff;font-family:'DM Mono',monospace;">18 Failed</span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
               <div style="display:flex;gap:14px;flex-wrap:wrap;">
                 <div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:2px;background:#4ade80;"></div><span style="font-size:11px;color:var(--text-muted);">Perfect</span></div>
@@ -2181,17 +2200,34 @@
                 </div>
                 <div>
                   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-                    <span style="font-size:12px;color:var(--accent);">With Census MCP</span>
+                    <span style="font-size:12px;color:var(--accent);">Claude + Census MCP</span>
                     <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);">97.4% (38/40)</span>
                   </div>
                   <div style="height:24px;background:var(--surface2);border-radius:5px;overflow:hidden;">
                     <div style="width:97.4%;height:100%;background:var(--accent);border-radius:5px;"></div>
                   </div>
                 </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                    <span style="font-size:12px;color:var(--accent2);">Ollama + Census MCP</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);">76.9% (30/39)</span>
+                  </div>
+                  <div style="height:24px;background:var(--surface2);border-radius:5px;overflow:hidden;">
+                    <div style="width:76.9%;height:100%;background:var(--accent2);border-radius:5px;"></div>
+                  </div>
+                </div>
               </div>
-              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);text-align:center;">
-                <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Improvement: </span>
-                <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);">+44.8 pp</span>
+              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+                <div style="display:flex;justify-content:space-between;text-align:center;">
+                  <div>
+                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Claude vs Baseline</span><br>
+                    <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);">+44.8 pp</span>
+                  </div>
+                  <div>
+                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Ollama vs Baseline</span><br>
+                    <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent2);">+24.3 pp</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -2210,21 +2246,48 @@
                 </div>
                 <div>
                   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-                    <span style="font-size:12px;color:var(--accent);">With Census MCP</span>
+                    <span style="font-size:12px;color:var(--accent);">Claude + Census MCP</span>
                     <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);">82.5% (33/40)</span>
                   </div>
                   <div style="height:24px;background:var(--surface2);border-radius:5px;overflow:hidden;">
                     <div style="width:82.5%;height:100%;background:var(--accent);border-radius:5px;"></div>
                   </div>
                 </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                    <span style="font-size:12px;color:var(--accent2);">Ollama + Census MCP</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);">15.4% (6/39)</span>
+                  </div>
+                  <div style="height:24px;background:var(--surface2);border-radius:5px;overflow:hidden;">
+                    <div style="width:15.4%;height:100%;background:var(--accent2);border-radius:5px;"></div>
+                  </div>
+                </div>
               </div>
-              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);text-align:center;">
-                <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Improvement: </span>
-                <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);">+77.5 pp</span>
+              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+                <div style="display:flex;justify-content:space-between;text-align:center;">
+                  <div>
+                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Claude vs Baseline</span><br>
+                    <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);">+77.5 pp</span>
+                  </div>
+                  <div>
+                    <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);">Ollama vs Baseline</span><br>
+                    <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--accent2);">+10.4 pp</span>
+                  </div>
+                </div>
               </div>
             </div>
 
           </div>
+
+          <!-- Key Insight -->
+          <div style="margin-top:20px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent2);border-radius:var(--radius);padding:20px 24px;display:flex;align-items:flex-start;gap:16px;">
+            <div style="font-size:20px;flex-shrink:0;margin-top:2px;">💡</div>
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent2);margin-bottom:6px;">Key Finding</div>
+              <p style="font-size:13px;color:var(--text-muted);line-height:1.7;margin:0;">MCP access alone is not enough — model quality matters enormously. Ollama with Census MCP improves over baseline, but Claude with Census MCP outperforms both by a wide margin. The same real-time data produces dramatically different results depending on the model's ability to correctly interpret tool outputs and query the right geographic level.</p>
+            </div>
+          </div>
+
         </div>
 
       </div>
